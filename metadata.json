@@ -1,6 +1,8 @@
 {
-  "name": "6FRAME Studio Pricing",
-  "description": "Explore cinematic pricing for Hollywood-quality trailers, studio intros, branded films, and premium visual storytelling experiences.",
+  "name": "6FRAME Studio Rates",
+  "description": "High-energy cinematic brand evolution, theatrical trailers, and premium motion identity. Experience the power of 6FRAME storytelling.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
