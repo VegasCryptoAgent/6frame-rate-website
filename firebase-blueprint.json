@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "Video": {
+      "title": "Video",
+      "description": "Representative video clip for a showcase",
+      "type": "object",
+      "properties": {
+        "showcaseId": {
+          "type": "string",
+          "description": "ID of the showcase this video belongs to (e.g., 'premium-motion')"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the video clip"
+        },
+        "code": {
+          "type": "string",
+          "description": "Technical code for the video"
+        },
+        "url": {
+          "type": "string",
+          "description": "URL of the video file (e.g., from Firebase Storage or external)"
+        },
+        "order": {
+          "type": "number",
+          "description": "Display order in the showcase"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["showcaseId", "title", "url", "order"]
+    }
+  },
+  "firestore": {
+    "/videos/{videoId}": {
+      "schema": "Video",
+      "description": "Collection of all showcase videos"
+    }
+  }
+}

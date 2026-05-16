@@ -1,0 +1,501 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'motion/react';
+import { ArrowLeft, Zap, Box, Activity, ShieldCheck, CornerRightDown } from 'lucide-react';
+import Marquee from './Marquee.tsx';
+import LazyVideo from './LazyVideo.tsx';
+import { Video, subscribeToVideos, testConnection } from '../services/videoService';
+
+const DEFAULT_VIDEOS: Video[] = [
+  {
+    id: '1',
+    showcaseId: 'premium-motion',
+    title: "JMI Entertainment Logo",
+    code: "6F-SR",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/Upscale%20JMI%20Entertainent%20Logo%20Video.mp4?alt=media&token=0583b6c3-2397-4297-9ba5-64fea90eb78b",
+    order: 1,
+    description: "A high-impact cinematic logo animation for JMI Entertainment, featuring dynamic lighting and premium textures.",
+    duration: "0:12"
+  },
+  {
+    id: '2',
+    showcaseId: 'premium-motion',
+    title: "1810 Series Promo",
+    code: "AF-775",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/Upscale%201810%20Short%20Commercial.mp4?alt=media&token=1e9f1885-e0cc-4fac-bf1a-ba510270c298",
+    order: 2,
+    description: "Promotional spot for the 1810 Series, utilizing motion graphics to convey luxury and technical precision.",
+    duration: "0:30"
+  },
+  {
+    id: '3',
+    showcaseId: 'premium-motion',
+    title: "IndeRoc Logo",
+    code: "PD-3",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/upscale%20inderock%20logo.mp4?alt=media&token=caa6194b-69cd-4e79-a825-c46bba377c79",
+    order: 3,
+    description: "Logo reveal for IndeRoc, focusing on organic textures and powerful composition.",
+    duration: "0:08"
+  },
+  {
+    id: '4',
+    showcaseId: 'premium-motion',
+    title: "1810 Series Intro",
+    code: "JMI-EN",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/this%20one%20-%20upscale%20into.mp4?alt=media&token=339c7f08-4092-44fe-bad5-03beee3b80bd",
+    order: 4,
+    description: "Opening titles for the 1810 Series, blending cinematic scale with detailed typography.",
+    duration: "0:15"
+  },
+  {
+    id: '5',
+    showcaseId: 'premium-motion',
+    title: "6Frame Commercial",
+    code: "NP-05",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6Frame%20Batman%20Commercial.mp4?alt=media&token=ad812cd7-595f-4d48-9572-f8d1e75c4b42",
+    order: 5,
+    description: "Custom commercial project showcasing advanced 3D motion techniques and cinematic storytelling.",
+    duration: "0:45"
+  },
+  {
+    id: '6',
+    showcaseId: 'premium-motion',
+    title: "6Frame Commercial",
+    code: "NP-06",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6Frame%20Commerical%20with%20Voice%20Over.mp4?alt=media&token=526196d4-73d6-47e3-a75b-ac84fdda055a",
+    order: 6,
+    description: "Full production commercial featuring high-end visual effects and professional voice-over integration.",
+    duration: "0:60"
+  },
+  {
+    id: '7',
+    showcaseId: 'premium-motion',
+    title: "SQS Logo",
+    code: "NP-07",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/SQS%201.mp4?alt=media&token=84428354-840d-48eb-b91b-1086eb36489a",
+    order: 7,
+    description: "Sleek and professional logo animation for SQS, emphasizing technology and reliability.",
+    duration: "0:10"
+  },
+  {
+    id: '8',
+    showcaseId: 'premium-motion',
+    title: "SQS Alternative Logo",
+    code: "NP-08",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/hf_20260514_233454_f26debf0-6f41-477c-b68f-804f3bc33b8d.mp4?alt=media&token=3dcdd32c-b758-4363-ad7a-ee6ed7d5ed5e",
+    order: 8,
+    description: "An alternate creative take on the SQS brand identity, exploring different visual languages.",
+    duration: "0:12"
+  },
+  {
+    id: '9',
+    showcaseId: 'premium-motion',
+    title: "6Frame Commercial",
+    code: "NP-09",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6Frame%20Studio%20Productions%20Commercial.mp4?alt=media&token=d4494c7a-4552-4525-b470-7e2f839a9729",
+    order: 9,
+    description: "Studio production commercial highlighting our creative process and technical capabilities.",
+    duration: "0:50"
+  },
+  {
+    id: '10',
+    showcaseId: 'premium-motion',
+    title: "6Frame Studio Commercial",
+    code: "NP-10",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/hf_20260515_001524_f7483cbf-9ab4-487b-b444-57bf7bf9a10c.mp4?alt=media&token=25363a6f-3d68-499a-b499-e46b53b1cbcf",
+    order: 10,
+    description: "A visually striking commercial spot developed in-house to demonstrate next-gen motion design.",
+    duration: "0:40"
+  },
+  {
+    id: '11',
+    showcaseId: 'premium-motion',
+    title: "6Frame Studio Commercial",
+    code: "NP-11",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6FrameStudio%20FilmProjector%20Commercial.mp4?alt=media&token=762e3ba5-dad3-4479-bc15-5683ee167abe",
+    order: 11,
+    description: "Themed commercial project utilizing classic film aesthetics combined with modern digital precision.",
+    duration: "0:35"
+  },
+  {
+    id: '12',
+    showcaseId: 'premium-motion',
+    title: "6Frame Studio Commercial",
+    code: "NP-12",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6frame-studio-01.mp4?alt=media&token=510b9d08-86e3-4820-8267-f6ce8e3abf4b",
+    order: 12,
+    description: "High-octane commercial reel showcasing our best studio production work.",
+    duration: "1:00"
+  },
+  {
+    id: '13',
+    showcaseId: 'premium-motion',
+    title: "6Frame Studio Superman Commercial",
+    code: "NP-13",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6frame-studio-03.mp4?alt=media&token=55610cfd-d180-4bf9-98d8-8c6233f4246f",
+    order: 13,
+    description: "Themed superhero commercial demonstrating complex character animation and environmental design.",
+    duration: "0:45"
+  }
+];
+
+interface VideoCardProps {
+  video: Video;
+  index: number;
+  onSelect: (video: Video) => void;
+}
+
+const VideoCard: React.FC<VideoCardProps> = ({ video, index, onSelect }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: false, amount: 0.3 });
+  
+  return (
+    <motion.div 
+      ref={ref}
+      className={`relative min-h-screen flex items-center justify-center p-[4vw] overflow-hidden ${index % 2 === 0 ? 'bg-[#000]' : 'bg-[#050505]'}`}
+    >
+      {/* Background Big Text */}
+      <motion.div 
+        style={{ x: index % 2 === 0 ? '-20%' : '20%' }}
+        animate={{ x: isInView ? (index % 2 === 0 ? '10%' : '-10%') : (index % 2 === 0 ? '-20%' : '20%') }}
+        transition={{ duration: 2, ease: "easeOut" }}
+        className="absolute inset-0 flex items-center justify-center pointer-events-none whitespace-nowrap overflow-hidden select-none"
+      >
+        <span className="text-[30vw] font-black text-white/[0.02] uppercase tracking-tighter italic">
+          {video.title.split(' ')[0]}
+        </span>
+      </motion.div>
+
+      <div className="relative z-10 w-full max-w-7xl flex flex-col md:flex-row items-center gap-[6vw]">
+        {/* The Frame */}
+        <div 
+          onClick={(e) => {
+            console.log("Expanding project:", video.title);
+            onSelect(video);
+          }}
+          className="relative w-full md:w-4/5 aspect-video group cursor-pointer z-20"
+        >
+          {/* Animated Borders */}
+          <div className="absolute -inset-4 border border-white/5 group-hover:border-white/20 transition-colors duration-700" />
+          <div className="absolute -top-4 -left-4 w-12 h-12 border-t-2 border-l-2 border-white/40" />
+          <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-2 border-r-2 border-white/40" />
+          
+          {/* Video Container */}
+          <div className="w-full h-full overflow-hidden bg-black relative">
+             <LazyVideo 
+                src={video.url}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-contain transition-all duration-[2s]"
+              />
+          </div>
+          
+          <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 flex items-center justify-center transition-colors duration-500">
+            <div className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+               <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-6 py-3 border border-white/20">
+                  <span className="text-xs font-black tracking-widest uppercase">Expand Project</span>
+               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="w-full md:w-2/5 space-y-12">
+          <div className="space-y-4">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-4"
+            >
+              <span className="text-white/60 font-mono text-sm tracking-[0.5em] block uppercase">
+                Sequence.0{index + 1}
+              </span>
+              <div className="h-[1px] flex-grow bg-white/20" />
+            </motion.div>
+            <h3 className="text-[clamp(3.5rem,8vw,10rem)] font-black uppercase leading-[0.8] tracking-tighter">
+              {video.title.split(' ')[0]}
+              <br />
+              <span className="text-white/20 italic">{video.title.split(' ')[1]}</span>
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-2 gap-8 pt-8 border-t border-white/10">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Activity size={10} className="text-[#ff4d00]" />
+                <span className="text-[10px] uppercase tracking-widest text-white/40">Visual Specs</span>
+              </div>
+              <p className="text-xs uppercase font-bold">120 FPS // HDR10+</p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={10} className="text-[#ff4d00]" />
+                <span className="text-[10px] uppercase tracking-widest text-white/40">Art Direction</span>
+              </div>
+              <p className="text-xs uppercase font-bold">Hyper-Realistic</p>
+            </div>
+          </div>
+
+          <motion.div 
+            whileHover={{ x: 10 }}
+            onClick={(e) => {
+              console.log("Extracting brief:", video.title);
+              onSelect(video);
+            }}
+            className="inline-flex items-center gap-4 text-[#ff4d00] cursor-pointer group z-20"
+          >
+            <div className="w-12 h-12 rounded-full border border-[#ff4d00]/30 flex items-center justify-center group-hover:bg-[#ff4d00] group-hover:text-black transition-all">
+              <CornerRightDown size={20} />
+            </div>
+            <span className="text-xs font-bold uppercase tracking-[0.4em]">Extract Brief</span>
+          </motion.div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+export default function Showcase() {
+  const navigate = useNavigate();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [videos, setVideos] = useState<Video[]>(DEFAULT_VIDEOS);
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const { scrollYProgress } = useScroll({ target: containerRef });
+  
+  const logoScale = useTransform(scrollYProgress, [0, 0.2], [1, 15]);
+  const logoOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+  const progressWidth = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedVideo(null);
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
+
+  useEffect(() => {
+    if (selectedVideo) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [selectedVideo]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    testConnection();
+
+    const unsubscribe = subscribeToVideos('premium-motion', (fetchedVideos) => {
+      if (fetchedVideos.length > 0) {
+        setVideos(fetchedVideos.map(v => ({
+          ...DEFAULT_VIDEOS.find(dv => dv.id === v.id || dv.order === v.order),
+          ...v
+        })));
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <div ref={containerRef} className="bg-black text-white selection:bg-[#ff4d00] selection:text-black font-sans">
+      {/* Video Detail Overlay */}
+      <AnimatePresence>
+        {selectedVideo && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl overflow-y-auto"
+          >
+            <div className="min-h-screen p-[6vw] flex flex-col items-center">
+              <div className="w-full max-w-7xl flex flex-col gap-12">
+                <div className="flex justify-between items-center">
+                  <span className="font-mono text-[#ff4d00] tracking-[0.5em] text-xs uppercase">Project.Details</span>
+                  <button 
+                    onClick={() => setSelectedVideo(null)}
+                    className="p-4 rounded-full border border-white/10 hover:bg-white/10 transition-colors uppercase text-[10px] tracking-widest font-bold"
+                  >
+                    Close _ [ESC]
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                  <div className="lg:col-span-2 space-y-8">
+                    <div className="aspect-video bg-black border border-white/5 relative group">
+                      <LazyVideo 
+                        src={selectedVideo.url}
+                        autoPlay
+                        loop
+                        playsInline
+                        className="w-full h-full object-contain"
+                      />
+                      <div className="absolute bottom-6 right-6 px-4 py-2 bg-black/50 backdrop-blur-md border border-white/10 text-[10px] font-mono">
+                        SRC: {selectedVideo.code} // {selectedVideo.duration}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col justify-between space-y-12">
+                    <div className="space-y-8">
+                      <h2 className="text-6xl font-black uppercase tracking-tighter italic">
+                        {selectedVideo.title}
+                      </h2>
+                      <p className="text-white/60 text-lg leading-relaxed font-medium">
+                        {selectedVideo.description || "A masterclass in technical motion design. This project pushed the boundaries of visual fidelity and artistic direction."}
+                      </p>
+
+                      <div className="grid grid-cols-1 gap-6 pt-12 border-t border-white/5">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] uppercase tracking-widest opacity-40">Duration</span>
+                          <span className="text-sm font-black italic">{selectedVideo.duration || "0:30"}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] uppercase tracking-widest opacity-40">Asset Code</span>
+                          <span className="text-sm font-black italic">{selectedVideo.code}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] uppercase tracking-widest opacity-40">Resolution</span>
+                          <span className="text-sm font-black italic">4K UHD</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={() => navigate('/contact')}
+                      className="w-full p-8 bg-[#ff4d00] text-black text-xl font-black uppercase tracking-widest hover:bg-white transition-all rounded-none"
+                    >
+                      Inquire About This Service
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Permanent Frame UI */}
+      <div className="fixed inset-0 pointer-events-none z-[100] border-[1vw] border-black border-opacity-50">
+        <div className="absolute top-[2vw] left-[2vw] flex gap-4">
+           <div className="w-1 h-1 bg-white animate-pulse" />
+           <div className="w-1 h-1 bg-[#ff4d00] animate-pulse delay-100" />
+           <div className="w-1 h-1 bg-white/40 animate-pulse delay-200" />
+        </div>
+        <div className="absolute top-[2vw] right-[2vw] text-[8px] font-mono tracking-widest vertical-rl">
+          6FRAME_SYSTEM_v4.0.2 // STABLE
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <motion.div 
+        style={{ scaleX: progressWidth }}
+        className="fixed top-0 left-0 right-0 h-1 bg-[#ff4d00] origin-left z-[101]"
+      />
+
+      {/* Navigation */}
+      <nav className="fixed top-12 left-12 z-[102]">
+        <button 
+          onClick={() => navigate('/')}
+          className="group relative flex items-center justify-center w-16 h-16 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-[#ff4d00] transition-colors duration-500 overflow-hidden"
+        >
+          <ArrowLeft size={24} className="group-hover:-translate-x-2 transition-transform" />
+          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
+        </button>
+      </nav>
+
+      {/* Hero: The Gate */}
+      <section className="relative h-[200vh] overflow-hidden">
+        <div className="sticky top-0 h-screen flex items-center justify-center">
+          {/* Background Elements */}
+          <div className="absolute inset-0 overflow-hidden opacity-20">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] aspect-square border border-white/5 rounded-full animate-[spin_60s_linear_infinite]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] aspect-square border border-white/5 rounded-full animate-[spin_40s_linear_infinite_reverse]" />
+          </div>
+
+          <motion.div 
+            style={{ scale: logoScale }}
+            className="flex flex-col items-center gap-8 relative z-10"
+          >
+            <motion.div style={{ opacity: logoOpacity }} className="text-center">
+               <span className="text-[10px] uppercase tracking-[1em] text-[#ff4d00] font-black block mb-8">Premium Package</span>
+               <h1 className="text-[15vw] font-black uppercase leading-none tracking-tighter">
+                Premium
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic">Motion</span>
+               </h1>
+            </motion.div>
+          </motion.div>
+
+          <motion.div 
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             transition={{ delay: 1 }}
+             className="absolute bottom-12 flex flex-col items-center gap-4"
+          >
+            <div className="w-[1px] h-32 bg-gradient-to-b from-transparent via-[#ff4d00] to-transparent animate-bounce" />
+            <span className="text-[10px] uppercase tracking-[0.5em] font-bold text-white/40">Initialize Scroll</span>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Main Content Gallery */}
+      <main className="relative z-10">
+        {videos.map((video, index) => (
+          <VideoCard key={video.id} video={video} index={index} onSelect={setSelectedVideo} />
+        ))}
+      </main>
+
+      {/* Closing: The Terminal */}
+      <section className="relative min-h-screen bg-[#ff4d00] text-black p-[6vw] flex flex-col justify-between overflow-hidden">
+        {/* Huge BG Text */}
+        <div className="absolute -bottom-20 -left-20 text-[40vw] font-black opacity-10 select-none pointer-events-none">
+          END
+        </div>
+
+        <div className="relative z-10 flex flex-col md:flex-row justify-between items-start gap-12">
+          <div className="space-y-6">
+            <h2 className="text-[clamp(4rem,10vw,12rem)] font-black uppercase leading-[0.8] tracking-tighter">
+              READY TO
+              <br />
+              <span className="italic">ASCEND?</span>
+            </h2>
+            <p className="max-w-[40ch] text-xl font-bold uppercase tracking-tight">
+              We only accept projects that challenge the status quo. If your brand is ready for this level of intensity, let's talk.
+            </p>
+          </div>
+
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/contact')}
+            className="bg-black text-white px-[4vw] py-[2vw] text-2xl font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all rounded-none"
+          >
+            Initiate Contact
+          </motion.button>
+        </div>
+
+        <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8 pt-12 border-t border-black/20">
+          {[
+            { label: "Hardware", value: "A6000 Ada" },
+            { label: "Pipeline", value: "ACES 1.2" },
+            { label: "Studio", value: "London HQ" },
+            { label: "Enc", value: "HEVC / AV1" }
+          ].map((item, i) => (
+            <div key={i} className="space-y-1">
+              <span className="text-[10px] uppercase tracking-widest font-black opacity-40">{item.label}</span>
+              <p className="text-sm font-bold uppercase">{item.value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footnote */}
+      <footer className="p-8 text-center text-[8px] font-mono tracking-[0.8em] opacity-40 uppercase">
+        Designed for the absolute 0.1% // No Compromises // 6Frame Studio
+      </footer>
+    </div>
+  );
+}
