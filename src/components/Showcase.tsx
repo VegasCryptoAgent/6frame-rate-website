@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Zap, Box, Activity, ShieldCheck, CornerRightDown } from 'lucide-react';
+import { ArrowLeft, Zap, Box, Activity, ShieldCheck, CornerRightDown, Share2, Check } from 'lucide-react';
 import Marquee from './Marquee.tsx';
 import LazyVideo from './LazyVideo.tsx';
 import { Video, subscribeToVideos, testConnection } from '../services/videoService';
@@ -65,7 +65,7 @@ const DEFAULT_VIDEOS: Video[] = [
     url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6Frame%20Commerical%20with%20Voice%20Over.mp4?alt=media&token=526196d4-73d6-47e3-a75b-ac84fdda055a",
     order: 6,
     description: "Full production commercial featuring high-end visual effects and professional voice-over integration.",
-    duration: "0:60"
+    duration: "1:00"
   },
   {
     id: '7',
@@ -148,6 +148,34 @@ interface VideoCardProps {
 const VideoCard: React.FC<VideoCardProps> = ({ video, index, onSelect }) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: false, amount: 0.3 });
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    try {
+      await navigator.clipboard.writeText(video.url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `6Frame: ${video.title}`,
+          text: `Check out this motion design project: ${video.title}`,
+          url: video.url,
+        });
+      } catch (err) {
+        console.log('Share failed', err);
+      }
+    } else {
+      const smsBody = `Check out this video from 6Frame: ${video.url}`;
+      window.location.href = `sms:?body=${encodeURIComponent(smsBody)}`;
+    }
+  };
   
   return (
     <motion.div 
@@ -198,6 +226,27 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, index, onSelect }) => {
                   <span className="text-xs font-black tracking-widest uppercase">Expand Project</span>
                </div>
             </div>
+          </div>
+          
+          {/* Share Button on Card */}
+          <div className="absolute top-4 right-4 z-30">
+            <button
+              onClick={handleShare}
+              className="p-4 bg-black/60 backdrop-blur-md border border-white/10 hover:bg-white hover:text-black transition-all flex items-center gap-3 group/share shadow-lg"
+              title="Share Video"
+            >
+              {copied ? (
+                <>
+                  <Check size={16} className="text-green-600" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Link Copied</span>
+                </>
+              ) : (
+                <>
+                  <Share2 size={16} />
+                  <span className="text-[10px] font-black uppercase tracking-widest opacity-0 group-hover/share:opacity-100 transition-opacity">Share</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
 
@@ -262,19 +311,68 @@ export default function Showcase() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [videos, setVideos] = useState<Video[]>(DEFAULT_VIDEOS);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [isCinemaMode, setIsCinemaMode] = useState(false);
   const { scrollYProgress } = useScroll({ target: containerRef });
   
   const logoScale = useTransform(scrollYProgress, [0, 0.2], [1, 15]);
   const logoOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
   const progressWidth = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
+  const [realDuration, setRealDuration] = useState<string | null>(null);
+
+  // Manage internal ready state based on src
+  useEffect(() => {
+    setRealDuration(null);
+  }, [selectedVideo]);
+
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const [detailCopied, setDetailCopied] = useState(false);
+
+  const handleDetailShare = async () => {
+    if (!selectedVideo) return;
+    
+    try {
+      await navigator.clipboard.writeText(selectedVideo.url);
+      setDetailCopied(true);
+      setTimeout(() => setDetailCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `6Frame: ${selectedVideo.title}`,
+          text: `Check out this motion design: ${selectedVideo.title}`,
+          url: selectedVideo.url,
+        });
+      } catch (err) {
+        console.log('Share failed', err);
+      }
+    } else {
+      const smsBody = `Check out this video from 6Frame: ${selectedVideo.url}`;
+      window.location.href = `sms:?body=${encodeURIComponent(smsBody)}`;
+    }
+  };
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelectedVideo(null);
+      if (e.key === 'Escape') {
+        if (isCinemaMode) {
+          setIsCinemaMode(false);
+        } else {
+          setSelectedVideo(null);
+        }
+      }
     };
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
-  }, []);
+  }, [isCinemaMode]);
 
   useEffect(() => {
     if (selectedVideo) {
@@ -282,6 +380,9 @@ export default function Showcase() {
     } else {
       document.body.style.overflow = 'unset';
     }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [selectedVideo]);
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -296,7 +397,10 @@ export default function Showcase() {
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      setIsCinemaMode(false);
+    };
   }, []);
 
   return (
@@ -308,70 +412,179 @@ export default function Showcase() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl overflow-y-auto"
+            className={`fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl transition-colors duration-700 ${isCinemaMode ? 'bg-black overflow-hidden' : 'overflow-y-auto'}`}
           >
-            <div className="min-h-screen p-[6vw] flex flex-col items-center">
-              <div className="w-full max-w-7xl flex flex-col gap-12">
-                <div className="flex justify-between items-center">
-                  <span className="font-mono text-[#ff4d00] tracking-[0.5em] text-xs uppercase">Project.Details</span>
-                  <button 
-                    onClick={() => setSelectedVideo(null)}
-                    className="p-4 rounded-full border border-white/10 hover:bg-white/10 transition-colors uppercase text-[10px] tracking-widest font-bold"
-                  >
-                    Close _ [ESC]
-                  </button>
-                </div>
+            {/* Cinema Mode Close Overlay Component */}
+            <AnimatePresence>
+              {isCinemaMode && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="fixed top-8 left-0 right-0 z-[211] flex justify-center pointer-events-none"
+                >
+                  <div className="bg-black/60 backdrop-blur-md px-6 py-2 border border-white/10 text-[10px] uppercase tracking-[0.3em] font-bold text-white/60">
+                    Cinema Mode Active // Esc to Exit
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-                  <div className="lg:col-span-2 space-y-8">
-                    <div className="aspect-video bg-black border border-white/5 relative group">
+            <div className={`min-h-[100dvh] flex flex-col transition-all duration-700 ${isCinemaMode ? 'h-[100dvh] overflow-hidden' : 'p-[4vw]'}`}>
+              <AnimatePresence mode="wait">
+                {isCinemaMode ? (
+                  <motion.div
+                    key="cinema-content"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-[210] bg-black flex items-center justify-center p-4 lg:p-12"
+                  >
+                    <div className="w-full h-full max-w-7xl mx-auto relative group">
                       <LazyVideo 
                         src={selectedVideo.url}
                         autoPlay
                         loop
                         playsInline
-                        className="w-full h-full object-contain"
+                        isCinemaMode={true}
+                        className="w-full h-full"
+                        onLoadedMetadata={(e) => {
+                          const video = e.currentTarget;
+                          setRealDuration(formatDuration(video.duration));
+                        }}
                       />
-                      <div className="absolute bottom-6 right-6 px-4 py-2 bg-black/50 backdrop-blur-md border border-white/10 text-[10px] font-mono">
-                        SRC: {selectedVideo.code} // {selectedVideo.duration}
+                      
+                      {/* Back button and info in Cinema Mode */}
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="absolute top-6 left-6 right-6 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                         <button 
+                          onClick={() => setIsCinemaMode(false)}
+                          className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-[10px] uppercase tracking-widest font-bold hover:bg-white hover:text-black transition-all"
+                        >
+                          Exit Cinema Mode _ [ESC]
+                        </button>
+                        <div className="text-[10px] font-mono tracking-widest opacity-40 uppercase hidden sm:block">
+                          {selectedVideo.title} // 4K STICKY REEL
+                        </div>
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="detail-content"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="w-full max-w-7xl mx-auto flex flex-col gap-8 flex-grow"
+                  >
+                    <div className="flex justify-between items-center shrink-0">
+                      <span className="font-mono text-[#ff4d00] tracking-[0.5em] text-xs uppercase">Project.Details</span>
+                      <div className="flex gap-4">
+                        <button 
+                          onClick={handleDetailShare}
+                          className="flex items-center gap-3 p-4 rounded-full border border-white/10 hover:bg-white hover:text-black transition-all uppercase text-[10px] tracking-widest font-bold"
+                        >
+                          {detailCopied ? (
+                            <>
+                              <Check size={14} className="text-green-600" />
+                              <span>Copied</span>
+                            </>
+                          ) : (
+                            <>
+                              <Share2 size={14} />
+                              <span>Share</span>
+                            </>
+                          )}
+                        </button>
+                        <button 
+                          onClick={() => {
+                            setSelectedVideo(null);
+                            setIsCinemaMode(false);
+                          }}
+                          className="p-4 rounded-full border border-white/10 hover:bg-white/10 transition-colors uppercase text-[10px] tracking-widest font-bold"
+                        >
+                          Close _ [ESC]
+                        </button>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex flex-col justify-between space-y-12">
-                    <div className="space-y-8">
-                      <h2 className="text-6xl font-black uppercase tracking-tighter italic">
-                        {selectedVideo.title}
-                      </h2>
-                      <p className="text-white/60 text-lg leading-relaxed font-medium">
-                        {selectedVideo.description || "A masterclass in technical motion design. This project pushed the boundaries of visual fidelity and artistic direction."}
-                      </p>
+                    <div className="flex flex-col lg:flex-row gap-12 flex-grow">
+                      <div className="lg:w-2/3 max-h-[60vh] overflow-hidden">
+                        <div 
+                          onClick={() => setIsCinemaMode(true)}
+                          className="bg-black relative group cursor-pointer overflow-hidden aspect-video border border-white/5 hover:border-[#ff4d00]/50 shadow-2xl"
+                        >
+                          <LazyVideo 
+                            src={selectedVideo.url}
+                            autoPlay
+                            loop
+                            playsInline
+                            isCinemaMode={false}
+                            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                            onLoadedMetadata={(e) => {
+                              const video = e.currentTarget;
+                              setRealDuration(formatDuration(video.duration));
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 flex items-center justify-center transition-opacity">
+                            <div className="bg-white/10 backdrop-blur-md px-6 py-3 border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <span className="text-[10px] font-black tracking-widest uppercase">Expand Cinema Mode</span>
+                            </div>
+                          </div>
+                          <div className="absolute bottom-6 right-6 px-4 py-2 bg-black/50 backdrop-blur-md border border-white/10 text-[10px] font-mono">
+                            SRC: {selectedVideo.code} // {realDuration || selectedVideo.duration}
+                          </div>
+                        </div>
+                      </div>
 
-                      <div className="grid grid-cols-1 gap-6 pt-12 border-t border-white/5">
-                        <div className="flex justify-between items-center">
-                          <span className="text-[10px] uppercase tracking-widest opacity-40">Duration</span>
-                          <span className="text-sm font-black italic">{selectedVideo.duration || "0:30"}</span>
+                      <div className="flex flex-col justify-between space-y-12 lg:w-1/3">
+                        <div className="space-y-8">
+                          <h2 className="text-6xl font-black uppercase tracking-tighter italic">
+                            {selectedVideo.title}
+                          </h2>
+                          <p className="text-white/60 text-lg leading-relaxed font-medium">
+                            {selectedVideo.description || "A masterclass in technical motion design. This project pushed the boundaries of visual fidelity and artistic direction."}
+                          </p>
+
+                          <div className="grid grid-cols-1 gap-6 pt-12 border-t border-white/5">
+                            <div className="flex justify-between items-center">
+                              <span className="text-[10px] uppercase tracking-widest opacity-40">Duration</span>
+                              <span className="text-sm font-black italic">{realDuration || selectedVideo.duration || "0:30"}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-[10px] uppercase tracking-widest opacity-40">Asset Code</span>
+                              <span className="text-sm font-black italic">{selectedVideo.code}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-[10px] uppercase tracking-widest opacity-40">Resolution</span>
+                              <span className="text-sm font-black italic">4K UHD</span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-[10px] uppercase tracking-widest opacity-40">Asset Code</span>
-                          <span className="text-sm font-black italic">{selectedVideo.code}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-[10px] uppercase tracking-widest opacity-40">Resolution</span>
-                          <span className="text-sm font-black italic">4K UHD</span>
+
+                        <div className="space-y-4">
+                          <button 
+                            onClick={() => setIsCinemaMode(true)}
+                            className="w-full p-5 border-2 border-white text-white text-sm font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all rounded-none flex items-center justify-center gap-3"
+                          >
+                            <Zap size={18} />
+                            Enter Cinema Mode
+                          </button>
+                          <button 
+                            onClick={() => navigate('/contact')}
+                            className="w-full p-8 bg-[#ff4d00] text-black text-xl font-black uppercase tracking-widest hover:bg-white transition-all rounded-none"
+                          >
+                            Inquire About This Service
+                          </button>
                         </div>
                       </div>
                     </div>
-
-                    <button 
-                      onClick={() => navigate('/contact')}
-                      className="w-full p-8 bg-[#ff4d00] text-black text-xl font-black uppercase tracking-widest hover:bg-white transition-all rounded-none"
-                    >
-                      Inquire About This Service
-                    </button>
-                  </div>
-                </div>
-              </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         )}
@@ -424,7 +637,7 @@ export default function Showcase() {
                <h1 className="text-[15vw] font-black uppercase leading-none tracking-tighter">
                 Premium
                 <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic">Motion</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic inline-block pb-2 pr-[0.3em] -mr-[0.3em]">Motion</span>
                </h1>
             </motion.div>
           </motion.div>

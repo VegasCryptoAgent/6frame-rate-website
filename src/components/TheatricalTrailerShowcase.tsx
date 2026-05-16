@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Film, Play, Scissors, MonitorPlay } from 'lucide-react';
+import { ArrowLeft, Film, Play, Scissors, MonitorPlay, Zap, Share2, Check } from 'lucide-react';
 import Marquee from './Marquee.tsx';
 import LazyVideo from './LazyVideo.tsx';
 import { Video, subscribeToVideos, testConnection } from '../services/videoService';
@@ -24,7 +24,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "AF-775",
     url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/Tiger%20Woods.mp4?alt=media&token=0cdf0a55-389b-450f-8833-6f96994c15a7",
     order: 2,
-    description: "An high-energy sports promo featuring Tiger Woods, focusing on precision, power, and the legacy of the game.",
+    description: "A High-Energy sports satire spoof of the latest trails and tribulations of Tiger Woods.",
     duration: "0:45"
   },
   {
@@ -58,6 +58,34 @@ interface TrailerCardProps {
 const TrailerCard: React.FC<TrailerCardProps> = ({ video, index, onSelect }) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: false, amount: 0.2 });
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    try {
+      await navigator.clipboard.writeText(video.url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `6Frame: ${video.title}`,
+          text: `Check out this theatrical trailer: ${video.title}`,
+          url: video.url,
+        });
+      } catch (err) {
+        console.log('Share failed', err);
+      }
+    } else {
+      const smsBody = `Check out this video from 6Frame: ${video.url}`;
+      window.location.href = `sms:?body=${encodeURIComponent(smsBody)}`;
+    }
+  };
   
   return (
     <motion.div 
@@ -101,6 +129,27 @@ const TrailerCard: React.FC<TrailerCardProps> = ({ video, index, onSelect }) => 
                </div>
             </div>
           </div>
+
+          {/* Share Button on Card */}
+          <div className="absolute top-4 right-4 z-30">
+            <button
+              onClick={handleShare}
+              className="p-4 bg-black/60 backdrop-blur-md border border-white/10 hover:bg-white hover:text-black transition-all flex items-center gap-3 group/share shadow-lg"
+              title="Share Video"
+            >
+              {copied ? (
+                <>
+                  <Check size={16} className="text-green-600" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Link Copied</span>
+                </>
+              ) : (
+                <>
+                  <Share2 size={16} />
+                  <span className="text-[10px] font-black uppercase tracking-widest opacity-0 group-hover/share:opacity-100 transition-opacity">Share</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         <div className="w-full flex flex-col md:flex-row justify-between items-end gap-8 text-white">
@@ -135,6 +184,7 @@ export default function TheatricalTrailerShowcase() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [videos, setVideos] = useState<Video[]>(DEFAULT_VIDEOS);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [isCinemaMode, setIsCinemaMode] = useState(false);
   
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -153,13 +203,61 @@ export default function TheatricalTrailerShowcase() {
     return () => unsubscribe();
   }, []);
 
+  const [realDuration, setRealDuration] = useState<string | null>(null);
+
+  // Manage internal ready state based on src
+  useEffect(() => {
+    setRealDuration(null);
+  }, [selectedVideo]);
+
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const [detailCopied, setDetailCopied] = useState(false);
+
+  const handleDetailShare = async () => {
+    if (!selectedVideo) return;
+    
+    try {
+      await navigator.clipboard.writeText(selectedVideo.url);
+      setDetailCopied(true);
+      setTimeout(() => setDetailCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `6Frame: ${selectedVideo.title}`,
+          text: `Check out this theatrical trailer: ${selectedVideo.title}`,
+          url: selectedVideo.url,
+        });
+      } catch (err) {
+        console.log('Share failed', err);
+      }
+    } else {
+      const smsBody = `Check out this video from 6Frame: ${selectedVideo.url}`;
+      window.location.href = `sms:?body=${encodeURIComponent(smsBody)}`;
+    }
+  };
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelectedVideo(null);
+      if (e.key === 'Escape') {
+        if (isCinemaMode) {
+          setIsCinemaMode(false);
+        } else {
+          setSelectedVideo(null);
+        }
+      }
     };
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
-  }, []);
+  }, [isCinemaMode]);
 
   useEffect(() => {
     if (selectedVideo) {
@@ -167,6 +265,9 @@ export default function TheatricalTrailerShowcase() {
     } else {
       document.body.style.overflow = 'unset';
     }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [selectedVideo]);
 
   return (
@@ -178,77 +279,183 @@ export default function TheatricalTrailerShowcase() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-black backdrop-blur-3xl overflow-y-auto"
+            className={`fixed inset-0 z-[200] bg-black backdrop-blur-3xl transition-colors duration-700 ${isCinemaMode ? 'bg-black overflow-hidden' : 'overflow-y-auto'}`}
           >
-            <div className="min-h-screen p-[6vw] flex flex-col items-center justify-center">
-              <div className="w-full max-w-7xl flex flex-col gap-12">
-                <div className="flex justify-between items-center text-white/60">
-                   <div className="flex items-center gap-4">
-                     <div className="w-2 h-2 rounded-full bg-[#ff4d00] animate-pulse" />
-                     <span className="font-mono tracking-[0.6em] text-[10px] uppercase italic">Master.Override // Production_Mode</span>
-                   </div>
-                   <button 
-                    onClick={() => setSelectedVideo(null)}
-                    className="group flex items-center gap-4 px-8 py-4 border border-white/10 hover:border-[#ff4d00] transition-all uppercase text-[10px] tracking-widest font-black italic"
-                  >
-                    Terminate View _ [ESC]
-                  </button>
-                </div>
+            {/* Cinema Mode Close Overlay Component */}
+            <AnimatePresence>
+              {isCinemaMode && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="fixed top-8 left-0 right-0 z-[211] flex justify-center pointer-events-none"
+                >
+                  <div className="bg-black/60 backdrop-blur-md px-6 py-2 border border-white/10 text-[10px] uppercase tracking-[0.3em] font-bold text-white/60 font-mono italic">
+                    Cinema Mode Active // Esc to Exit
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-16">
-                  <div className="lg:col-span-3 space-y-8">
-                    <div className="aspect-[21/9] bg-[#050505] border border-white/5 shadow-2xl relative">
+            <div className={`min-h-[100dvh] flex flex-col transition-all duration-700 ${isCinemaMode ? 'h-[100dvh] overflow-hidden' : 'p-[4vw]'}`}>
+              <AnimatePresence mode="wait">
+                {isCinemaMode ? (
+                  <motion.div
+                    key="cinema-content"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-[210] bg-black flex items-center justify-center p-4 lg:p-12"
+                  >
+                    <div className="w-full h-full max-w-7xl mx-auto relative group">
                       <LazyVideo 
                         src={selectedVideo.url}
                         autoPlay
                         loop
                         playsInline
-                        className="w-full h-full object-contain"
+                        isCinemaMode={true}
+                        className="w-full h-full"
+                        onLoadedMetadata={(e) => {
+                          const video = e.currentTarget;
+                          setRealDuration(formatDuration(video.duration));
+                        }}
                       />
-                      {/* Viewfinder Overlay inside modal */}
-                      <div className="absolute inset-0 pointer-events-none opacity-20 border-[20px] border-black" />
-                      <div className="absolute top-4 left-4 text-[8px] font-mono opacity-50 uppercase">23.976 FPS // 4:4:4</div>
+                      
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="absolute top-6 left-6 right-6 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                         <button 
+                          onClick={() => setIsCinemaMode(false)}
+                          className="px-6 py-3 bg-[#ff4d00] text-black text-[10px] uppercase tracking-widest font-black hover:bg-white transition-all shadow-2xl"
+                        >
+                          Exit Cinema Mode _ [ESC]
+                        </button>
+                        <div className="text-[10px] font-mono tracking-widest opacity-40 uppercase text-white hidden sm:block">
+                          {selectedVideo.title} // MASTER THEATRICAL CUT
+                        </div>
+                      </motion.div>
                     </div>
-                  </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="detail-content"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="w-full max-w-7xl mx-auto flex flex-col gap-8 flex-grow"
+                  >
+                    <div className="flex justify-between items-center text-white/60 shrink-0">
+                      <div className="flex items-center gap-4">
+                        <div className="w-2 h-2 rounded-full bg-[#ff4d00] animate-pulse" />
+                        <span className="font-mono tracking-[0.6em] text-[10px] uppercase italic">Master.Override // Production_Mode</span>
+                      </div>
+                      <div className="flex gap-4">
+                        <button 
+                          onClick={handleDetailShare}
+                          className="flex items-center gap-3 p-4 border border-white/10 bg-white/5 hover:bg-[#ff4d00] hover:text-black transition-all uppercase text-[10px] tracking-widest font-black"
+                        >
+                          {detailCopied ? (
+                            <>
+                              <Check size={14} className="text-green-600" />
+                              <span>COPIED</span>
+                            </>
+                          ) : (
+                            <>
+                              <Share2 size={14} />
+                              <span>SHARE</span>
+                            </>
+                          )}
+                        </button>
+                        <button 
+                          onClick={() => {
+                            setSelectedVideo(null);
+                            setIsCinemaMode(false);
+                          }}
+                          className="p-4 border border-white/5 bg-white/5 hover:bg-white/10 transition-colors uppercase text-[10px] tracking-[0.3em] font-black"
+                        >
+                          CLOSE_SYSTEM
+                        </button>
+                      </div>
+                    </div>
 
-                  <div className="flex flex-col justify-end space-y-12">
-                     <div className="space-y-8">
-                        <div className="space-y-2">
-                           <span className="text-[#ff4d00] font-black italic uppercase text-xs tracking-widest">Theatrical Cut</span>
-                           <h2 className="text-6xl font-black uppercase tracking-[calc(-0.05em)] leading-none italic">
-                            {selectedVideo.title}
-                           </h2>
+                    <div className="flex flex-col lg:flex-row gap-12 flex-grow items-center">
+                      <div className="lg:w-3/4 max-h-[60vh] overflow-hidden">
+                        <div 
+                          onClick={() => setIsCinemaMode(true)}
+                          className="bg-[#050505] relative group cursor-pointer overflow-hidden aspect-[21/9] border border-white/5 hover:border-[#ff4d00]/40 shadow-2xl"
+                        >
+                          <LazyVideo 
+                            src={selectedVideo.url}
+                            autoPlay
+                            loop
+                            playsInline
+                            isCinemaMode={false}
+                            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                            onLoadedMetadata={(e) => {
+                              const video = e.currentTarget;
+                              setRealDuration(formatDuration(video.duration));
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 flex items-center justify-center transition-opacity">
+                            <div className="bg-[#ff4d00] p-6 text-black">
+                              <span className="text-[10px] font-black tracking-widest uppercase">Launch Cinematic Mode</span>
+                            </div>
+                          </div>
+                          <div className="absolute top-4 left-4 text-[8px] font-mono opacity-50 uppercase">23.976 FPS // 4:4:4</div>
                         </div>
-                        
-                        <p className="text-white/50 text-base leading-relaxed font-mono uppercase tracking-tight">
-                          {selectedVideo.description || "A cinematic journey through high-fidelity visuals and immersive soundscapes. Engineered for the silver screen."}
-                        </p>
+                      </div>
 
-                        <div className="space-y-4 pt-12 border-t border-white/10">
-                           <div className="flex justify-between font-mono text-[10px] opacity-40">
-                              <span>RUNTIME</span>
-                              <span>{selectedVideo.duration || "2:15"}</span>
-                           </div>
-                           <div className="flex justify-between font-mono text-[10px] opacity-40">
-                              <span>LOCATION</span>
-                              <span>{selectedVideo.code}</span>
-                           </div>
-                           <div className="flex justify-between font-mono text-[10px] opacity-40">
-                              <span>BITRATE</span>
-                              <span>MASTER_RAW</span>
-                           </div>
+                      <div className="flex flex-col justify-end space-y-12 lg:w-1/4">
+                        <div className="space-y-8">
+                          <div className="space-y-2">
+                             <span className="text-[#ff4d00] font-black italic uppercase text-xs tracking-widest">Theatrical Cut</span>
+                             <h2 className="text-6xl font-black uppercase tracking-[calc(-0.05em)] leading-none italic">
+                              {selectedVideo.title}
+                            </h2>
+                          </div>
+                          
+                          <p className="text-white/50 text-base leading-relaxed font-mono uppercase tracking-tight">
+                            {selectedVideo.description || "A cinematic journey through high-fidelity visuals and immersive soundscapes. Engineered for the silver screen."}
+                          </p>
+
+                          <div className="space-y-4 pt-12 border-t border-white/10">
+                             <div className="flex justify-between font-mono text-[10px] opacity-40">
+                                <span>RUNTIME</span>
+                                <span>{realDuration || selectedVideo.duration || "2:15"}</span>
+                             </div>
+                             <div className="flex justify-between font-mono text-[10px] opacity-40">
+                                <span>LOCATION</span>
+                                <span>{selectedVideo.code}</span>
+                             </div>
+                             <div className="flex justify-between font-mono text-[10px] opacity-40">
+                                <span>BITRATE</span>
+                                <span>MASTER_RAW</span>
+                             </div>
+                          </div>
                         </div>
-                     </div>
 
-                     <button 
-                      onClick={() => navigate('/contact')}
-                      className="w-full p-8 bg-white text-black text-xl font-black uppercase tracking-widest hover:bg-[#ff4d00] hover:text-white transition-all rounded-none italic"
-                    >
-                      Commission Trailer
-                    </button>
-                  </div>
-                </div>
-              </div>
+                        <div className="space-y-4">
+                          <button 
+                            onClick={() => setIsCinemaMode(true)}
+                            className="w-full p-5 border border-white/20 text-white text-sm font-black uppercase tracking-widest hover:border-[#ff4d00] hover:text-[#ff4d00] transition-all rounded-none flex items-center justify-center gap-3 italic"
+                          >
+                            <Zap size={18} />
+                            Launch Cinematic View
+                          </button>
+                          <button 
+                            onClick={() => navigate('/contact')}
+                            className="w-full p-8 border border-[#ff4d00] text-[#ff4d00] text-lg font-black uppercase tracking-widest hover:bg-[#ff4d00] hover:text-black transition-all italic"
+                          >
+                            Book Production
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         )}
@@ -294,7 +501,7 @@ export default function TheatricalTrailerShowcase() {
             <h1 className="text-[16vw] font-black uppercase leading-[0.7] tracking-tighter italic">
               Theatrical
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/50 to-transparent">Trailer</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/50 to-transparent inline-block pr-[0.3em] -mr-[0.3em]">Trailer</span>
             </h1>
           </motion.div>
           
