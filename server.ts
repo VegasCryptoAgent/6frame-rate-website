@@ -31,7 +31,13 @@ async function startServer() {
     app.use(express.static(distPath));
     
     // Catch-all route to serve index.html for SPA routing
+    // Exclude API and common static file extensions from catch-all
     app.get('*', (req, res) => {
+      // If the request is for a file (has an extension), don't serve index.html
+      const ext = path.extname(req.path);
+      if (ext && ext !== '.html') {
+        return res.status(404).send('Not found');
+      }
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }

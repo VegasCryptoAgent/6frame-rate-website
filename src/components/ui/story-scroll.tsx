@@ -27,12 +27,12 @@ export const FlowSection: React.FC<FlowSectionProps> = ({
   <section
     data-flow-section
     aria-label={ariaLabel}
-    className={cx('relative min-h-screen w-full overflow-hidden', className)}
+    className={cx('relative min-h-[100dvh] w-full overflow-hidden', className)}
   >
     <div
       data-flow-inner
       className={cx(
-        'flow-art-container relative flex min-h-screen w-full flex-col justify-center md:justify-between gap-4 md:gap-6 px-[4vw] pt-[clamp(1.5rem,5vw,4vw)] pb-[4vw]',
+        'flow-art-container relative flex min-h-[100dvh] w-full flex-col justify-center md:justify-between gap-4 md:gap-6 px-[4vw] pt-[clamp(1.5rem,5vw,4vw)] pb-[4vw]',
         'will-change-transform',
       )}
       style={{ transformOrigin: 'bottom left', ...style }}
@@ -113,7 +113,13 @@ const FlowArt: React.FC<FlowArtProps> = ({
 
       ScrollTrigger.refresh();
 
+      // Second refresh after a small delay to handle layout shifts
+      const timer = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+
       return () => {
+        clearTimeout(timer);
         triggers.forEach((t) => t.kill());
       };
     },

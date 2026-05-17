@@ -37,7 +37,7 @@ function Home() {
         <hr className="my-[2vw] border-none border-t border-black opacity-100" />
         <div>
           <h1
-            className="text-[clamp(1rem,10vw,14rem)] md:text-[clamp(3rem,8vw,8rem)] lg:text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight"
+            className="text-[clamp(1rem,8vw,14rem)] md:text-[clamp(3rem,8vw,8rem)] lg:text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight"
           >
             6Frame
             <br />
@@ -54,7 +54,7 @@ function Home() {
         <hr className="my-[2vw] border-none border-t border-white/60" />
         <div>
           <h2
-            className="text-[clamp(1rem,10vw,14rem)] md:text-[clamp(3rem,8vw,8rem)] lg:text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight"
+            className="text-[clamp(1rem,8vw,14rem)] md:text-[clamp(3rem,8vw,8rem)] lg:text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight"
           >
             Premium
             <br />
@@ -89,7 +89,7 @@ function Home() {
         <hr className="my-[2vw] border-none border-t border-black/60" />
         <div>
           <h2
-            className="text-[clamp(1rem,10vw,14rem)] md:text-[clamp(3rem,8vw,8rem)] lg:text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight"
+            className="text-[clamp(1rem,8vw,14rem)] md:text-[clamp(3rem,8vw,8rem)] lg:text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight"
           >
             Cinematic
             <br />
@@ -124,7 +124,7 @@ function Home() {
         <hr className="my-[2vw] border-none border-t border-white/50" />
         <div>
           <h2
-            className="text-[clamp(1rem,10vw,14rem)] md:text-[clamp(3rem,8vw,8rem)] lg:text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight"
+            className="text-[clamp(1rem,8vw,14rem)] md:text-[clamp(3rem,8vw,8rem)] lg:text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight"
           >
             Studio-Grade
             <br />
