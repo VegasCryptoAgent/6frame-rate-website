@@ -60,7 +60,7 @@ function Home() {
             <br />
             Motion Logo
             <br />
-            $5,000
+            $5,000+
           </h2>
         </div>
         <hr className="my-[2vw] border-none border-t border-white/60" />
@@ -95,7 +95,7 @@ function Home() {
             <br />
             Identity Package
             <br />
-            $15,000
+            $15,000+
           </h2>
         </div>
         <hr className="my-[2vw] border-none border-t border-black/60" />
@@ -165,12 +165,10 @@ function Home() {
             className="cursor-pointer relative inline-block group"
           >
             {/* Invisbile anchor for layout size */}
-            <h2 className="text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight opacity-0 pointer-events-none no-select">
-              Ready
-              <br />
-              To
-              <br />
-              Create?
+            <h2 className="text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight opacity-0 pointer-events-none no-select flex flex-col">
+              <span>Ready</span>
+              <span>To</span>
+              <span>Create?</span>
             </h2>
             
             <AnimatePresence mode="wait">
@@ -183,9 +181,8 @@ function Home() {
                   transition={{ duration: 0.3, ease: "easeOut" }}
                   className="text-[clamp(3rem,12vw,14rem)] md:text-[clamp(3.5rem,8vw,8rem)] lg:text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight text-[#ff4d00] absolute inset-0 flex flex-col justify-center whitespace-nowrap"
                 >
-                  CLICK
-                  <br />
-                  HERE
+                  <span>CLICK</span>
+                  <span>HERE</span>
                 </motion.h2>
               ) : (
                 <motion.h2
@@ -197,10 +194,8 @@ function Home() {
                   className="text-[clamp(3rem,12vw,14rem)] md:text-[clamp(3.5rem,8vw,8rem)] lg:text-[clamp(3.5rem,12vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight text-white absolute inset-0 flex flex-col justify-center whitespace-nowrap"
                 >
                   <span className="text-[#ff4d00]">Ready</span>
-                  <br />
-                  To
-                  <br />
-                  Create?
+                  <span>To</span>
+                  <span>Create?</span>
                 </motion.h2>
               )}
             </AnimatePresence>
