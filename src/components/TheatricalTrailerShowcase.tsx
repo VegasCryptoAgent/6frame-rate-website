@@ -114,7 +114,7 @@ const TrailerCard: React.FC<TrailerCardProps> = ({ video, index, onSelect }) => 
         {video.title.split(' ')[0]}
       </motion.div>
 
-      <div className="relative z-10 w-full max-w-7xl flex flex-col items-center gap-[4vw]">
+      <div className="relative z-10 w-full max-w-7xl flex flex-col items-center gap-4 md:gap-[4vw]">
         <div 
           onClick={(e) => {
             console.log("Expanding trailer:", video.title);
@@ -176,13 +176,13 @@ const TrailerCard: React.FC<TrailerCardProps> = ({ video, index, onSelect }) => 
           </div>
         </div>
 
-        <div className="w-full flex flex-col md:flex-row justify-between items-end gap-8 text-white">
-          <div className="space-y-4">
+        <div className="w-full flex flex-col lg:flex-row justify-between items-end gap-4 md:gap-8 text-white">
+          <div className="space-y-2 md:space-y-4">
             <div className="flex items-center gap-4 text-white/40">
               <Film size={14} className="text-[#ff4d00]" />
               <span className="font-mono text-xs tracking-[0.5em] uppercase">Production Cut 0{index + 1}</span>
             </div>
-            <h3 className="text-[clamp(3.5rem,8vw,12rem)] font-black uppercase leading-[0.75] tracking-tighter italic">
+            <h3 className="text-[clamp(1.1rem,10vw,12rem)] xl:text-[clamp(2.2rem,3.5vw,5rem)] font-black uppercase leading-[0.75] tracking-tighter italic">
               {video.title}
             </h3>
           </div>
@@ -447,7 +447,7 @@ export default function TheatricalTrailerShowcase() {
                         <div className="space-y-8">
                           <div className="space-y-2">
                              <span className="text-[#ff4d00] font-black italic uppercase text-xs tracking-widest">Theatrical Cut</span>
-                             <h2 className="text-6xl font-black uppercase tracking-[calc(-0.05em)] leading-none italic">
+                             <h2 className="text-4xl md:text-6xl font-black uppercase tracking-[calc(-0.05em)] leading-none italic">
                               {selectedVideo.title}
                             </h2>
                           </div>
@@ -536,7 +536,7 @@ export default function TheatricalTrailerShowcase() {
             transition={{ duration: 1.5, ease: "easeOut" }}
           >
             <span className="text-[10px] uppercase tracking-[1.5em] text-[#ff4d00] font-black italic block mb-12">The Apex Experience</span>
-            <h1 className="text-[16vw] font-black uppercase leading-[0.7] tracking-tighter italic">
+            <h1 className="text-[12vw] md:text-[16vw] font-black uppercase leading-[0.7] tracking-tighter italic">
               Theatrical
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/50 to-transparent inline-block pr-[0.3em] -mr-[0.3em]">Trailer</span>
@@ -574,7 +574,7 @@ export default function TheatricalTrailerShowcase() {
         <div className="relative bg-[#111] overflow-hidden group">
           <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors duration-1000" />
           <div className="relative z-10 p-[10vw] text-center space-y-12">
-            <h2 className="text-[clamp(3.5rem,10vw,14rem)] font-black uppercase leading-[0.8] tracking-tighter italic">
+            <h2 className="text-[clamp(1.1rem,10vw,14rem)] md:text-[clamp(3.5rem,10vw,14rem)] font-black uppercase leading-[0.8] tracking-tighter italic">
               Direct Your
               <br />
               Narrative

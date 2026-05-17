@@ -136,8 +136,8 @@ const IdentityCard: React.FC<IdentityCardProps> = ({ video, index, onSelect }) =
         {video.title.split(' ')[0]}
       </motion.div>
 
-      <div className={`relative z-10 w-full max-w-7xl flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-[8vw]`}>
-        <div className="w-full md:w-4/5 group relative z-20">
+      <div className={`relative z-10 w-full max-w-7xl flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-4 lg:gap-[6vw]`}>
+        <div className="w-full lg:w-[50%] group relative z-20">
           <div 
             onClick={(e) => {
               console.log("Expanding identity:", video.title);
@@ -187,13 +187,13 @@ const IdentityCard: React.FC<IdentityCardProps> = ({ video, index, onSelect }) =
           </div>
         </div>
 
-        <div className="w-full md:w-2/5 space-y-8 text-black">
+        <div className="w-full lg:w-[45%] space-y-4 md:space-y-8 text-black">
           <div className="flex items-center gap-4">
             <span className="w-12 h-[1px] bg-[#ff4d00]" />
             <span className="font-mono text-xs tracking-[0.4em] uppercase text-[#ff4d00]">Identity Level 0{index + 1}</span>
           </div>
           
-          <h3 className="text-[clamp(3rem,6vw,8rem)] font-black uppercase leading-[0.8] tracking-tighter">
+          <h3 className="text-[clamp(1.1rem,10vw,8rem)] xl:text-[clamp(2.2rem,3vw,3.5rem)] font-black uppercase leading-[0.8] tracking-tighter">
             {video.title.split(' ')[0]}
             <br />
             <span className="italic block pl-12 text-[#ff4d00]">{video.title.split(' ')[1]}</span>
@@ -450,7 +450,7 @@ export default function CinematicIdentityShowcase() {
 
                       <div className="flex flex-col justify-between space-y-12 lg:w-1/3">
                         <div className="space-y-8">
-                          <h2 className="text-6xl font-black uppercase tracking-tighter text-black">
+                          <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-black">
                             {selectedVideo.title}
                           </h2>
                           <p className="text-black/60 text-lg leading-relaxed font-medium">
@@ -534,7 +534,7 @@ export default function CinematicIdentityShowcase() {
           >
             <Hexagon size={64} className="text-[#ff4d00] animate-[spin_10s_linear_infinite]" />
           </motion.div>
-          <h1 className="text-[12vw] font-black uppercase leading-[0.75] tracking-tighter">
+          <h1 className="text-[clamp(1.1rem,12vw,14rem)] font-black uppercase leading-[0.75] tracking-tighter">
             Cinematic
             <br />
             <span className="text-[#ff4d00] inline-block pr-[0.3em] -mr-[0.3em]">Identity</span>
@@ -566,7 +566,7 @@ export default function CinematicIdentityShowcase() {
           whileInView={{ y: 0, opacity: 1 }}
           className="text-center space-y-12"
         >
-          <h2 className="text-[10vw] font-black uppercase leading-tight tracking-[calc(-0.05em)]">
+          <h2 className="text-[clamp(1.1rem,10vw,12rem)] font-black uppercase leading-tight tracking-[calc(-0.05em)]">
             Evolve <br />
             <span className="text-[#ff4d00]">Now</span>
           </h2>

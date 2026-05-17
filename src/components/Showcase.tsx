@@ -194,14 +194,14 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, index, onSelect }) => {
         </span>
       </motion.div>
 
-      <div className="relative z-10 w-full max-w-7xl flex flex-col md:flex-row items-center gap-[6vw]">
+      <div className="relative z-10 w-full max-w-7xl flex flex-col lg:flex-row items-center gap-4 lg:gap-[4vw]">
         {/* The Frame */}
         <div 
           onClick={(e) => {
             console.log("Expanding project:", video.title);
             onSelect(video);
           }}
-          className="relative w-full md:w-4/5 aspect-video group cursor-pointer z-20"
+          className="relative w-full lg:w-[50%] aspect-video group cursor-pointer z-20"
         >
           {/* Animated Borders */}
           <div className="absolute -inset-4 border border-white/5 group-hover:border-white/20 transition-colors duration-700" />
@@ -251,8 +251,8 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, index, onSelect }) => {
         </div>
 
         {/* Content */}
-        <div className="w-full md:w-2/5 space-y-12">
-          <div className="space-y-4">
+        <div className="w-full lg:w-[45%] space-y-4 md:space-y-8">
+          <div className="space-y-2 md:space-y-4">
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -263,7 +263,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, index, onSelect }) => {
               </span>
               <div className="h-[1px] flex-grow bg-white/20" />
             </motion.div>
-            <h3 className="text-[clamp(3.5rem,8vw,10rem)] font-black uppercase leading-[0.8] tracking-tighter">
+            <h3 className="text-[clamp(1rem,8vw,10rem)] xl:text-[clamp(2.2rem,3.2vw,3.8rem)] font-black uppercase leading-[0.8] tracking-tighter">
               {video.title.split(' ')[0]}
               <br />
               <span className="text-white/20 italic">{video.title.split(' ')[1]}</span>
@@ -542,7 +542,7 @@ export default function Showcase() {
 
                       <div className="flex flex-col justify-between space-y-12 lg:w-1/3">
                         <div className="space-y-8">
-                          <h2 className="text-6xl font-black uppercase tracking-tighter italic">
+                          <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter italic">
                             {selectedVideo.title}
                           </h2>
                           <p className="text-white/60 text-lg leading-relaxed font-medium">
@@ -634,7 +634,7 @@ export default function Showcase() {
           >
             <motion.div style={{ opacity: logoOpacity }} className="text-center">
                <span className="text-[10px] uppercase tracking-[1em] text-[#ff4d00] font-black block mb-8">Premium Package</span>
-               <h1 className="text-[15vw] font-black uppercase leading-none tracking-tighter">
+               <h1 className="text-[12vw] md:text-[15vw] font-black uppercase leading-none tracking-tighter">
                 Premium
                 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic inline-block pb-2 pr-[0.3em] -mr-[0.3em]">Motion</span>
@@ -670,12 +670,12 @@ export default function Showcase() {
 
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start gap-12">
           <div className="space-y-6">
-            <h2 className="text-[clamp(4rem,10vw,12rem)] font-black uppercase leading-[0.8] tracking-tighter">
+            <h2 className="text-[clamp(1rem,10vw,12rem)] md:text-[clamp(4rem,10vw,12rem)] font-black uppercase leading-[0.8] tracking-tighter">
               READY TO
               <br />
               <span className="italic">ASCEND?</span>
             </h2>
-            <p className="max-w-[40ch] text-xl font-bold uppercase tracking-tight">
+            <p className="max-w-[40ch] text-lg md:text-xl font-bold uppercase tracking-tight">
               We only accept projects that challenge the status quo. If your brand is ready for this level of intensity, let's talk.
             </p>
           </div>

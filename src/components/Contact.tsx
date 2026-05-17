@@ -60,7 +60,7 @@ export default function Contact() {
             <span className="text-[#ff4d00] font-mono text-[10px] tracking-[0.8em] block uppercase mb-4">
               Phase {step} // {step === 3 ? 'Authorization' : 'System Diagnostic'}
             </span>
-            <h1 className="text-[clamp(3rem,8vw,10rem)] font-black uppercase leading-[0.8] tracking-tighter">
+            <h1 className="text-[clamp(1.5rem,8vw,10rem)] md:text-[clamp(3.5rem,8vw,10rem)] font-black uppercase leading-[0.8] tracking-tighter">
               {step === 1 && <>Target <span className="text-white/20 italic">Acquisition</span></>}
               {step === 2 && <>DNA <span className="text-white/20 italic">Profiling</span></>}
               {step === 3 && <>Final <span className="text-white/20 italic">Execution</span></>}
@@ -92,7 +92,7 @@ export default function Contact() {
                         value={formData.name}
                         onChange={handleInputChange}
                         placeholder="ENTER NAME..."
-                        className="w-full bg-transparent border-b-2 border-white/10 py-6 text-4xl font-black focus:outline-none focus:border-[#ff4d00] transition-colors placeholder:text-white/5"
+                        className="w-full bg-transparent border-b-2 border-white/10 py-4 md:py-6 text-xl md:text-4xl font-black focus:outline-none focus:border-[#ff4d00] transition-colors placeholder:text-white/5 uppercase"
                       />
                     </div>
                     <div className="space-y-4">
@@ -103,7 +103,7 @@ export default function Contact() {
                         value={formData.email}
                         onChange={handleInputChange}
                         placeholder="ENTER EMAIL..."
-                        className="w-full bg-transparent border-b-2 border-white/10 py-6 text-4xl font-black focus:outline-none focus:border-[#ff4d00] transition-colors placeholder:text-white/5"
+                        className="w-full bg-transparent border-b-2 border-white/10 py-4 md:py-6 text-xl md:text-4xl font-black focus:outline-none focus:border-[#ff4d00] transition-colors placeholder:text-white/5 uppercase"
                       />
                     </div>
                   </div>
