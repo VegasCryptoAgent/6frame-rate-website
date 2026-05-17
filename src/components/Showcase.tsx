@@ -694,7 +694,7 @@ export default function Showcase() {
           {[
             { label: "Hardware", value: "A6000 Ada" },
             { label: "Pipeline", value: "ACES 1.2" },
-            { label: "Studio", value: "London HQ" },
+            { label: "Studio", value: "Las Vegas / Los Angeles" },
             { label: "Enc", value: "HEVC / AV1" }
           ].map((item, i) => (
             <div key={i} className="space-y-1">

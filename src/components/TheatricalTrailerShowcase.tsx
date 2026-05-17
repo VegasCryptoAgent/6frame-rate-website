@@ -46,6 +46,16 @@ const DEFAULT_VIDEOS: Video[] = [
     order: 4,
     description: "Sci-fi thriller trailer 'The 27 Protocol', using advanced VFX and a pulsing soundtrack to build suspense.",
     duration: "1:50"
+  },
+  {
+    id: '5',
+    showcaseId: 'theatrical-trailer',
+    title: "The Thorn Recordings",
+    code: "PX-05",
+    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/The%20Thorn%20Recordings.mp4?alt=media&token=88cf7cec-fe70-47c8-a2de-b810d426cc82",
+    order: 5,
+    description: "Upcoming cinematic production. Placeholder for future theatrical trailer integration.",
+    duration: "TBD"
   }
 ];
 
@@ -113,18 +123,32 @@ const TrailerCard: React.FC<TrailerCardProps> = ({ video, index, onSelect }) => 
           className="w-full relative group cursor-pointer z-20"
         >
           <div className="aspect-video w-full overflow-hidden bg-black relative border border-white/5 group-hover:border-white/20 transition-colors duration-500">
-            <LazyVideo 
-              src={video.url}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-contain transition-all duration-[2s]"
-            />
+            {video.url ? (
+              <LazyVideo 
+                src={video.url}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-contain transition-all duration-[2s]"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center bg-[#050505] space-y-6">
+                <div className="w-20 h-20 border border-white/10 flex items-center justify-center">
+                  <Play size={32} className="text-white/20" />
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                   <span className="text-xs font-mono tracking-[0.5em] uppercase text-white/40">Status // Pending</span>
+                   <span className="text-sm font-black uppercase tracking-[0.2em] text-[#ff4d00]">Incoming Production</span>
+                </div>
+              </div>
+            )}
             <div className="absolute inset-0 flex items-center justify-center bg-white/0 group-hover:bg-white/5 transition-colors duration-500">
                <div className="opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 transition-all duration-500">
                   <div className="bg-black/80 backdrop-blur-xl border border-white/20 px-10 py-5">
-                    <span className="text-sm font-black uppercase tracking-[0.3em] text-white">Full Screen Experience</span>
+                    <span className="text-sm font-black uppercase tracking-[0.3em] text-white">
+                      {video.url ? "Full Screen Experience" : "Development Phase"}
+                    </span>
                   </div>
                </div>
             </div>
@@ -383,26 +407,38 @@ export default function TheatricalTrailerShowcase() {
                     <div className="flex flex-col lg:flex-row gap-12 flex-grow items-center">
                       <div className="lg:w-3/4 max-h-[60vh] overflow-hidden">
                         <div 
-                          onClick={() => setIsCinemaMode(true)}
-                          className="bg-[#050505] relative group cursor-pointer overflow-hidden aspect-[21/9] border border-white/5 hover:border-[#ff4d00]/40 shadow-2xl"
+                          onClick={() => selectedVideo.url && setIsCinemaMode(true)}
+                          className={`bg-[#050505] relative group cursor-pointer overflow-hidden aspect-[21/9] border border-white/5 ${selectedVideo.url ? 'hover:border-[#ff4d00]/40' : 'cursor-default'} shadow-2xl`}
                         >
-                          <LazyVideo 
-                            src={selectedVideo.url}
-                            autoPlay
-                            loop
-                            playsInline
-                            isCinemaMode={false}
-                            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
-                            onLoadedMetadata={(e) => {
-                              const video = e.currentTarget;
-                              setRealDuration(formatDuration(video.duration));
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 flex items-center justify-center transition-opacity">
-                            <div className="bg-[#ff4d00] p-6 text-black">
-                              <span className="text-[10px] font-black tracking-widest uppercase">Launch Cinematic Mode</span>
+                          {selectedVideo.url ? (
+                            <LazyVideo 
+                              src={selectedVideo.url}
+                              autoPlay
+                              loop
+                              playsInline
+                              isCinemaMode={false}
+                              className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                              onLoadedMetadata={(e) => {
+                                const video = e.currentTarget;
+                                setRealDuration(formatDuration(video.duration));
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex flex-col items-center justify-center space-y-4">
+                              <div className="w-12 h-12 border border-white/5 flex items-center justify-center">
+                                <Play size={20} className="text-white/10" />
+                              </div>
+                              <span className="text-[10px] font-mono tracking-[0.4em] uppercase text-white/20">Data Stream Off / TBD</span>
                             </div>
-                          </div>
+                          )}
+                          
+                          {selectedVideo.url && (
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 flex items-center justify-center transition-opacity">
+                              <div className="bg-[#ff4d00] p-6 text-black">
+                                <span className="text-[10px] font-black tracking-widest uppercase">Launch Cinematic Mode</span>
+                              </div>
+                            </div>
+                          )}
                           <div className="absolute top-4 left-4 text-[8px] font-mono opacity-50 uppercase">23.976 FPS // 4:4:4</div>
                         </div>
                       </div>
@@ -437,13 +473,15 @@ export default function TheatricalTrailerShowcase() {
                         </div>
 
                         <div className="space-y-4">
-                          <button 
-                            onClick={() => setIsCinemaMode(true)}
-                            className="w-full p-5 border border-white/20 text-white text-sm font-black uppercase tracking-widest hover:border-[#ff4d00] hover:text-[#ff4d00] transition-all rounded-none flex items-center justify-center gap-3 italic"
-                          >
-                            <Zap size={18} />
-                            Launch Cinematic View
-                          </button>
+                          {selectedVideo.url && (
+                            <button 
+                              onClick={() => setIsCinemaMode(true)}
+                              className="w-full p-5 border border-white/20 text-white text-sm font-black uppercase tracking-widest hover:border-[#ff4d00] hover:text-[#ff4d00] transition-all rounded-none flex items-center justify-center gap-3 italic"
+                            >
+                              <Zap size={18} />
+                              Launch Cinematic View
+                            </button>
+                          )}
                           <button 
                             onClick={() => navigate('/contact')}
                             className="w-full p-8 border border-[#ff4d00] text-[#ff4d00] text-lg font-black uppercase tracking-widest hover:bg-[#ff4d00] hover:text-black transition-all italic"
@@ -553,7 +591,7 @@ export default function TheatricalTrailerShowcase() {
                 <br />
                 // ENGAGEMENT: Q4 OPEN
                 <br />
-                // LOCATION: GLOBAL_REMOTE
+                // LOCATION: LAS VEGAS / LOS ANGELES
               </div>
             </div>
           </div>

@@ -581,7 +581,7 @@ export default function CinematicIdentityShowcase() {
 
         <div className="absolute bottom-12 flex gap-24 text-[10px] uppercase tracking-[0.5em] font-bold opacity-30 md:hidden lg:flex">
           <span>Vision 03</span>
-          <span>6Frame Studio</span>
+          <span>Las Vegas / Los Angeles</span>
           <span>Built for the future</span>
         </div>
       </section>
