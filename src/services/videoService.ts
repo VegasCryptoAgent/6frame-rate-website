@@ -39,11 +39,17 @@ export function handleFirestoreError(error: any, operationType: OperationType, p
 
 export async function testConnection() {
   try {
-    // Attempting a server-side fetch of a non-existent doc to test connectivity and rules
-    await getDocFromServer(doc(db, 'system', 'connection-test'));
-    console.log('Firebase connection test successful');
+    console.log('Testing connection to DB:', db.app.options.projectId, 'Database:', (db as any)._databaseId?.database || 'default');
+    const docRef = doc(db, 'system', 'connection-test');
+    await getDocFromServer(docRef);
+    console.log('Firebase connection test successful (doc might not exist, but no permission error)');
   } catch (error: any) {
-    console.warn('Firebase connection test warning:', error.message);
+    console.error('Firebase connection test FAIL:', {
+      message: error.message,
+      code: error.code,
+      name: error.name,
+      stack: error.stack
+    });
     if (error.message.includes('the client is offline')) {
       console.error("Please check your Firebase configuration or internet connection.");
     }
