@@ -7,15 +7,16 @@ interface LazyVideoProps extends React.VideoHTMLAttributes<HTMLVideoElement> {
 }
 
 const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onClick, ...props }) => {
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  // activeSrc drives whether the video element downloads anything.
+  // We set it to the real src when visible, and clear it when scrolled away
+  // so the browser cancels the download and frees bandwidth for other videos.
+  const [activeSrc, setActiveSrc] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [isBuffering, setIsBuffering] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isBuffering, setIsBuffering] = useState(false);
 
-  // Auto-unmute when in cinema mode (since user interaction just happened via click)
   useEffect(() => {
     if (isCinemaMode) {
       setIsMuted(false);
@@ -27,17 +28,26 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setShouldLoad(true);
-            setIsVisible(true);
-          } else {
-            setIsVisible(false);
+            setActiveSrc(src);
+          } else if (!isCinemaMode) {
+            // Cancel the download so this video doesn't compete for bandwidth
+            const video = videoRef.current;
+            if (video) {
+              video.pause();
+              video.src = '';
+              video.load();
+            }
+            setActiveSrc(null);
+            setIsReady(false);
+            setIsBuffering(false);
           }
         });
       },
       {
-        // Larger margin so videos start loading before they scroll into view
-        rootMargin: isCinemaMode ? '0px' : '400px',
-        threshold: 0.1
+        // Start loading when 250px from viewport — gives a short head-start
+        // without wasting bandwidth on videos the user may never reach
+        rootMargin: isCinemaMode ? '0px' : '250px',
+        threshold: 0.05,
       }
     );
 
@@ -46,41 +56,30 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
     }
 
     return () => observer.disconnect();
-  }, [isCinemaMode]);
+  }, [src, isCinemaMode]);
 
-  // Reset ready state when src changes
+  // Reset when src prop changes
   useEffect(() => {
+    setActiveSrc(null);
     setIsReady(false);
     setIsBuffering(false);
   }, [src]);
 
-  // Handle playback
+  // Play/pause based on whether we have an active src and are ready
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !shouldLoad || !isReady) return;
+    if (!video || !activeSrc || !isReady) return;
 
-    if (isVisible) {
-      video.muted = isMuted;
-      if (!isMuted) {
-        video.volume = 1;
-      }
+    video.muted = isMuted;
+    if (!isMuted) video.volume = 1;
 
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // Fallback: autoplay blocked, stay paused
-        });
-      }
-    } else if (!isCinemaMode) {
-      video.pause();
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Autoplay blocked — stay paused silently
+      });
     }
-  }, [isVisible, shouldLoad, isReady, isMuted, isCinemaMode]);
-
-  // Determine preload strategy:
-  // - Not yet loaded at all: "none"
-  // - Loaded but not visible: "metadata" (fast, small download)
-  // - Visible: "auto" (start buffering the video)
-  const preloadValue = !shouldLoad ? 'none' : isVisible ? 'auto' : 'metadata';
+  }, [activeSrc, isReady, isMuted]);
 
   return (
     <div
@@ -88,34 +87,36 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
       className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center"
       style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}
     >
-      {shouldLoad ? (
+      {activeSrc ? (
         <video
           ref={videoRef}
-          src={src}
+          src={activeSrc}
           className={`${className} transition-opacity duration-300 ${isReady ? 'opacity-100' : 'opacity-0'} max-h-full max-w-full`}
           onClick={onClick}
-          onLoadedData={() => setIsReady(true)}
-          onCanPlay={() => setIsReady(true)}
+          onLoadedData={() => { setIsReady(true); setIsBuffering(false); }}
+          onCanPlay={() => { setIsReady(true); setIsBuffering(false); }}
           onWaiting={() => setIsBuffering(true)}
           onPlaying={() => setIsBuffering(false)}
           onStalled={() => setIsBuffering(true)}
-          preload={preloadValue}
+          preload="auto"
           playsInline
           muted={isMuted}
           loop
-          autoPlay={props.autoPlay}
+          autoPlay
           controlsList="nodownload"
           disableRemotePlayback
           style={{
             pointerEvents: props.onClick ? 'auto' : 'none',
             objectFit: isCinemaMode ? 'contain' : 'cover',
             willChange: 'transform, opacity',
-            backgroundColor: 'black'
+            backgroundColor: 'black',
           }}
           {...props}
         />
       ) : null}
-      {isReady && !isBuffering && (
+
+      {/* Mute/unmute button — only show when video is playing */}
+      {isReady && !isBuffering && activeSrc && (
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -123,7 +124,7 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
           }}
           className="absolute bottom-6 left-6 z-50 p-3 bg-black/60 border border-white/10 hover:bg-white hover:text-black transition-all group/volume"
           style={{ touchAction: 'manipulation' }}
-          title={isMuted ? "Unmute" : "Mute"}
+          title={isMuted ? 'Unmute' : 'Mute'}
         >
           {isMuted ? (
             <div className="flex items-center gap-3">
@@ -138,10 +139,10 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
           )}
         </button>
       )}
-      {(!isReady || isBuffering) && shouldLoad && (
-        <div
-          className="absolute inset-0 w-full h-full bg-black/40 flex items-center justify-center overflow-hidden transition-opacity duration-300 pointer-events-none"
-        >
+
+      {/* Loading spinner — shown while buffering */}
+      {(!isReady || isBuffering) && activeSrc && (
+        <div className="absolute inset-0 w-full h-full bg-black/40 flex items-center justify-center overflow-hidden pointer-events-none">
           <div className="relative z-10 w-12 h-12 border border-white/10 flex items-center justify-center">
             <div className="w-1 h-1 bg-white animate-ping" />
             <div className="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-white/40" />
