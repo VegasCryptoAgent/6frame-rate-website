@@ -3,20 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, Link, useLocation } from 'react-router-dom';
 import FlowArt, { FlowSection } from './components/ui/story-scroll.tsx';
 import Marquee from './components/Marquee.tsx';
 import { motion, AnimatePresence } from 'motion/react';
-import Showcase from './components/Showcase.tsx';
-import CinematicIdentityShowcase from './components/CinematicIdentityShowcase.tsx';
-import TheatricalTrailerShowcase from './components/TheatricalTrailerShowcase.tsx';
-import Contact from './components/Contact.tsx';
+
+// Lazy-load heavy showcase pages so the home page loads instantly
+const Showcase = React.lazy(() => import('./components/Showcase.tsx'));
+const CinematicIdentityShowcase = React.lazy(() => import('./components/CinematicIdentityShowcase.tsx'));
+const TheatricalTrailerShowcase = React.lazy(() => import('./components/TheatricalTrailerShowcase.tsx'));
+const Contact = React.lazy(() => import('./components/Contact.tsx'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -64,24 +61,18 @@ function Home() {
           </h2>
         </div>
         <hr className="my-[2vw] border-none border-t border-white/60" />
-        <Link 
+        <Link
           to="/showcase"
-          className="block md:hidden lg:block mt-auto relative z-50 hover:no-underline"
+          className="block mt-auto relative z-50 hover:no-underline"
+          style={{ touchAction: 'manipulation' }}
         >
-          <Marquee 
+          <Marquee
             speed={30}
             className="text-[#ff4d00] border-white cursor-pointer"
           >
             CLICK HERE
           </Marquee>
         </Link>
-        <div className="hidden md:block lg:hidden mt-auto md:-translate-y-[4in]">
-          <Link to="/showcase" className="block hover:no-underline">
-            <Marquee speed={30} className="text-[#ff4d00] border-white/40">
-              CLICK HERE
-            </Marquee>
-          </Link>
-        </div>
       </FlowSection>
 
       <FlowSection aria-label="Comment ça marche" style={{ backgroundColor: '#F5F0E8', color: '#000' }}>
@@ -99,24 +90,18 @@ function Home() {
           </h2>
         </div>
         <hr className="my-[2vw] border-none border-t border-black/60" />
-        <Link 
+        <Link
           to="/cinematic-identity"
-          className="block md:hidden lg:block mt-auto relative z-50 hover:no-underline"
+          className="block mt-auto relative z-50 hover:no-underline"
+          style={{ touchAction: 'manipulation' }}
         >
-          <Marquee 
+          <Marquee
             speed={30}
             className="text-[#ff4d00] border-black cursor-pointer"
           >
             CLICK HERE
           </Marquee>
         </Link>
-        <div className="hidden md:block lg:hidden mt-auto md:-translate-y-[4in]">
-          <Link to="/cinematic-identity" className="block hover:no-underline">
-            <Marquee speed={30} className="text-[#ff4d00] border-black/40">
-              CLICK HERE
-            </Marquee>
-          </Link>
-        </div>
       </FlowSection>
 
       <FlowSection aria-label="La vision" style={{ backgroundColor: '#111', color: '#fff' }}>
@@ -134,43 +119,38 @@ function Home() {
           </h2>
         </div>
         <hr className="my-[2vw] border-none border-t border-white/50" />
-        <Link 
+        <Link
           to="/theatrical-trailer"
-          className="block md:hidden lg:block mt-auto relative z-50 hover:no-underline"
+          className="block mt-auto relative z-50 hover:no-underline"
+          style={{ touchAction: 'manipulation' }}
         >
-          <Marquee 
+          <Marquee
             speed={30}
             className="text-[#ff4d00] border-white cursor-pointer"
           >
             CLICK HERE
           </Marquee>
         </Link>
-        <div className="hidden md:block lg:hidden mt-auto md:-translate-y-[4in]">
-          <Link to="/theatrical-trailer" className="block hover:no-underline">
-            <Marquee speed={30} className="text-[#ff4d00] border-white/40">
-              CLICK HERE
-            </Marquee>
-          </Link>
-        </div>
       </FlowSection>
 
       <FlowSection aria-label="Nous rejoindre" style={{ backgroundColor: '#000', color: '#fff' }}>
         <p className="text-xs font-bold uppercase tracking-[0.2em] invisible">05 — Join us</p>
         <hr className="my-[2vw] border-none border-t border-black/60" />
         <div className="flex items-center py-[2vw]">
-          <div 
+          <div
             onMouseEnter={() => setIsJoinHovered(true)}
             onMouseLeave={() => setIsJoinHovered(false)}
             onClick={() => navigate('/contact')}
             className="cursor-pointer relative inline-block group"
+            style={{ touchAction: 'manipulation' }}
           >
-            {/* Invisbile anchor for layout size */}
+            {/* Invisible anchor for layout size */}
             <h2 className="text-[clamp(1rem,8vw,14rem)] font-bold leading-[0.85] uppercase tracking-tight opacity-0 pointer-events-none no-select flex flex-col">
               <span>Ready</span>
               <span>To</span>
               <span>Create?</span>
             </h2>
-            
+
             <AnimatePresence mode="wait">
               {isJoinHovered ? (
                 <motion.h2
@@ -207,17 +187,27 @@ function Home() {
   );
 }
 
+function PageLoader() {
+  return (
+    <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="w-1 h-1 bg-white animate-ping" />
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <>
       <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/showcase" element={<Showcase />} />
-        <Route path="/cinematic-identity" element={<CinematicIdentityShowcase />} />
-        <Route path="/theatrical-trailer" element={<TheatricalTrailerShowcase />} />
-        <Route path="/contact" element={<Contact />} />
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/showcase" element={<Showcase />} />
+          <Route path="/cinematic-identity" element={<CinematicIdentityShowcase />} />
+          <Route path="/theatrical-trailer" element={<TheatricalTrailerShowcase />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
+      </Suspense>
     </>
   );
 }

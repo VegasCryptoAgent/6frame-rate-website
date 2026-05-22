@@ -35,7 +35,8 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
         });
       },
       {
-        rootMargin: isCinemaMode ? '0px' : '50px', // Minimal margin to prioritize active video
+        // Larger margin so videos start loading before they scroll into view
+        rootMargin: isCinemaMode ? '0px' : '400px',
         threshold: 0.1
       }
     );
@@ -47,48 +48,45 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
     return () => observer.disconnect();
   }, [isCinemaMode]);
 
-  // Manage internal ready state based on src
+  // Reset ready state when src changes
   useEffect(() => {
     setIsReady(false);
     setIsBuffering(false);
   }, [src]);
 
-  // Handle Playback and Resilience
+  // Handle playback
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !shouldLoad || !isReady) return;
 
     if (isVisible) {
-      // Sync video mute state with component state
       video.muted = isMuted;
-      
       if (!isMuted) {
         video.volume = 1;
-      }
-      
-      // Ensure we have a high priority for loading when visible
-      if (video.getAttribute('preload') !== 'auto') {
-        video.setAttribute('preload', 'auto');
       }
 
       const playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {
-          // Fallback for autoplay blocks
+          // Fallback: autoplay blocked, stay paused
         });
       }
     } else if (!isCinemaMode) {
-      // Only pause if NOT in cinema mode to avoid flickering during transitions
-      // or if the user scrolls away
       video.pause();
     }
-  }, [isVisible, shouldLoad, isReady, src, props.autoPlay, isCinemaMode]);
+  }, [isVisible, shouldLoad, isReady, isMuted, isCinemaMode]);
+
+  // Determine preload strategy:
+  // - Not yet loaded at all: "none"
+  // - Loaded but not visible: "metadata" (fast, small download)
+  // - Visible: "auto" (start buffering the video)
+  const preloadValue = !shouldLoad ? 'none' : isVisible ? 'auto' : 'metadata';
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center"
-      style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }} 
+      style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}
     >
       {shouldLoad ? (
         <video
@@ -101,14 +99,14 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
           onWaiting={() => setIsBuffering(true)}
           onPlaying={() => setIsBuffering(false)}
           onStalled={() => setIsBuffering(true)}
-          preload={isVisible ? "auto" : "none"}
+          preload={preloadValue}
           playsInline
           muted={isMuted}
           loop
           autoPlay={props.autoPlay}
           controlsList="nodownload"
           disableRemotePlayback
-          style={{ 
+          style={{
             pointerEvents: props.onClick ? 'auto' : 'none',
             objectFit: isCinemaMode ? 'contain' : 'cover',
             willChange: 'transform, opacity',
@@ -124,6 +122,7 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
             setIsMuted(!isMuted);
           }}
           className="absolute bottom-6 left-6 z-50 p-3 bg-black/60 border border-white/10 hover:bg-white hover:text-black transition-all group/volume"
+          style={{ touchAction: 'manipulation' }}
           title={isMuted ? "Unmute" : "Mute"}
         >
           {isMuted ? (
@@ -140,7 +139,7 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
         </button>
       )}
       {(!isReady || isBuffering) && shouldLoad && (
-        <div 
+        <div
           className="absolute inset-0 w-full h-full bg-black/40 flex items-center justify-center overflow-hidden transition-opacity duration-300 pointer-events-none"
         >
           <div className="relative z-10 w-12 h-12 border border-white/10 flex items-center justify-center">

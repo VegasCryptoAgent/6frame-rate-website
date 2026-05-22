@@ -8,17 +8,17 @@ interface MarqueeProps {
   className?: string;
 }
 
-const Marquee: React.FC<MarqueeProps> = ({ 
-  children, 
-  speed = 20, 
+const Marquee: React.FC<MarqueeProps> = ({
+  children,
+  speed = 20,
   direction = 'left',
-  className = '' 
+  className = ''
 }) => {
   const xTranslation = direction === 'left' ? ['0%', '-50%'] : ['-50%', '0%'];
 
   return (
-    <div 
-      className={`relative overflow-hidden w-[100vw] -mx-[4vw] py-6 border-y ${className}`}
+    <div
+      className={`relative overflow-hidden w-[100vw] -mx-[4vw] py-6 border-y cursor-pointer ${className}`}
     >
       <motion.div
         className="flex whitespace-nowrap"
@@ -28,10 +28,11 @@ const Marquee: React.FC<MarqueeProps> = ({
           repeat: Infinity,
           ease: "linear",
         }}
+        style={{ pointerEvents: 'none' }}
       >
         {[...Array(6)].map((_, i) => (
-          <span 
-            key={i} 
+          <span
+            key={i}
             className="flex items-center px-6 text-[clamp(2rem,6vw,8rem)] font-black uppercase italic tracking-tighter leading-none"
           >
             {children}
