@@ -21,7 +21,7 @@ export default defineConfig(({mode}) => {
           manualChunks: {
             'react-vendor': ['react', 'react-dom', 'react-router-dom'],
             'animation': ['motion', 'gsap', '@gsap/react'],
-            'firebase': ['firebase'],
+            'firebase': ['firebase/app', 'firebase/firestore', 'firebase/auth', 'firebase/storage'],
           },
         },
       },
