@@ -12,11 +12,11 @@ const DEFAULT_VIDEOS: Video[] = [
   {
     id: '1',
     showcaseId: 'cinematic-identity',
-    title: "6Frame Reel",
+    title: "6Frame Studio Sizzle Reel",
     code: "6F-SR",
-    url: `${GH}/Let.Them.See.You.mp4`,
+    url: `${GH}/New.Sizzle.Reel.mp4`,
     order: 1,
-    description: "The definitive 6Frame showreel, showcasing our range of cinematic capabilities across various projects.",
+    description: "The definitive 6Frame Studio sizzle reel — a full-spectrum showcase of our cinematic range. From logo reveals to theatrical trailers, every frame of this reel represents a brand story told at the highest level of motion design. This is what $15,000+ looks like.",
     duration: "1:20"
   },
   {
