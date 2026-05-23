@@ -6,7 +6,7 @@ import Marquee from './Marquee.tsx';
 import LazyVideo from './LazyVideo.tsx';
 import { Video, subscribeToVideos, testConnection } from '../services/videoService';
 
-const GH = "https://github.com/VegasCryptoAgent/6frame-rate-website/releases/download/video-assets-v1";
+const GH = "https://6frame-videos.lvbretteam.workers.dev";
 
 const DEFAULT_VIDEOS: Video[] = [
   {
