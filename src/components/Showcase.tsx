@@ -44,7 +44,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "1810 Series Intro",
     code: "JMI-EN",
-    url: `${GH}/1810.Series.Intro.mp4`,
+    url: `${GH}/FilmProjector.Commercial.mp4`,
     order: 4,
     description: "Opening titles for the 1810 Series, blending cinematic scale with detailed typography.",
     duration: "0:15"

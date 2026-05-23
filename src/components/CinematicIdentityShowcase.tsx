@@ -14,7 +14,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'cinematic-identity',
     title: "6Frame Reel",
     code: "6F-SR",
-    url: `${GH}/6Frame.Sizzle.Reel.mp4`,
+    url: `${GH}/When.I.Look.At.You.mp4`,
     order: 1,
     description: "The definitive 6Frame showreel, showcasing our range of cinematic capabilities across various projects.",
     duration: "1:20"
@@ -24,7 +24,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'cinematic-identity',
     title: "1810 Series Intro Credits",
     code: "AF-775",
-    url: `${GH}/1810.Intro.Credits.mp4`,
+    url: `${GH}/6Frame.Pitch.Deck.mp4`,
     order: 2,
     description: "Elegant and sophisticated intro credits for the 1810 Series, using abstract visuals to set a premium tone.",
     duration: "0:45"
@@ -64,7 +64,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'cinematic-identity',
     title: "Manifest Nueve Commercial",
     code: "NP-06",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/Manifest%20Nueve%20Commercial%201.mp4?alt=media&token=3a04c861-7e43-4bae-bd7c-b28391f72e47",
+    url: `${GH}/Manifest.Nueve.Commercial.mp4`,
     order: 6,
     description: "Brand commercial for Manifest Nueve, showcasing high-concept visuals and meticulous art direction.",
     duration: "0:45"
