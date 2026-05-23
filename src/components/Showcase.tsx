@@ -74,7 +74,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "SQS Logo",
     code: "NP-07",
-    url: `${GH}/SQS.Logo.mp4`,
+    url: `${GH}/Be.Afraid.mp4`,
     order: 7,
     description: "Sleek and professional logo animation for SQS, emphasizing technology and reliability.",
     duration: "0:10"
@@ -84,7 +84,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "SQS Alternative Logo",
     code: "NP-08",
-    url: `${GH}/SQS.Alt.Logo.mp4`,
+    url: `${GH}/6Frame.Commercial.v2.mp4`,
     order: 8,
     description: "An alternate creative take on the SQS brand identity, exploring different visual languages.",
     duration: "0:12"
