@@ -42,7 +42,7 @@ const DEFAULT_VIDEOS: Video[] = [
   {
     id: '4',
     showcaseId: 'premium-motion',
-    title: "1810 Series Intro",
+    title: "6Frame Projector Logo",
     code: "JMI-EN",
     url: `${GH}/FilmProjector.Commercial.mp4`,
     order: 4,
@@ -52,7 +52,7 @@ const DEFAULT_VIDEOS: Video[] = [
   {
     id: '5',
     showcaseId: 'premium-motion',
-    title: "6Frame Commercial",
+    title: "6Frame Batman Commercial",
     code: "NP-05",
     url: `${GH}/6Frame.Batman.Commercial.mp4`,
     order: 5,
@@ -72,7 +72,7 @@ const DEFAULT_VIDEOS: Video[] = [
   {
     id: '7',
     showcaseId: 'premium-motion',
-    title: "SQS Logo",
+    title: "Be Afraid. Be Very Afraid.",
     code: "NP-07",
     url: `${GH}/Be.Afraid.mp4`,
     order: 7,
@@ -82,7 +82,7 @@ const DEFAULT_VIDEOS: Video[] = [
   {
     id: '8',
     showcaseId: 'premium-motion',
-    title: "SQS Alternative Logo",
+    title: "6Frame Studio Logo",
     code: "NP-08",
     url: `${GH}/6Frame.Commercial.v2.mp4`,
     order: 8,
@@ -92,7 +92,7 @@ const DEFAULT_VIDEOS: Video[] = [
   {
     id: '9',
     showcaseId: 'premium-motion',
-    title: "6Frame Commercial",
+    title: "Tesla F*ck Around and Find Out",
     code: "NP-09",
     url: `${GH}/Tesla.mp4`,
     order: 9,
@@ -102,7 +102,7 @@ const DEFAULT_VIDEOS: Video[] = [
   {
     id: '10',
     showcaseId: 'premium-motion',
-    title: "6Frame Studio Commercial",
+    title: "1810 Series Commercial",
     code: "NP-10",
     url: `${GH}/6Frame.Sizzle.Reel.mp4`,
     order: 10,
@@ -112,7 +112,7 @@ const DEFAULT_VIDEOS: Video[] = [
   {
     id: '11',
     showcaseId: 'premium-motion',
-    title: "6Frame Studio Commercial",
+    title: "1810 Series Intro",
     code: "NP-11",
     url: `${GH}/6Frame.Opening.Scene.mp4`,
     order: 11,
@@ -122,7 +122,7 @@ const DEFAULT_VIDEOS: Video[] = [
   {
     id: '12',
     showcaseId: 'premium-motion',
-    title: "6Frame Studio Commercial",
+    title: "6Frame Director Commercial",
     code: "NP-12",
     url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6frame-studio-01.mp4?alt=media&token=510b9d08-86e3-4820-8267-f6ce8e3abf4b",
     order: 12,
@@ -132,7 +132,7 @@ const DEFAULT_VIDEOS: Video[] = [
   {
     id: '13',
     showcaseId: 'premium-motion',
-    title: "6Frame Studio Superman Commercial",
+    title: "6Frame Superman Commercial",
     code: "NP-13",
     url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6frame-studio-03.mp4?alt=media&token=55610cfd-d180-4bf9-98d8-8c6233f4246f",
     order: 13,
