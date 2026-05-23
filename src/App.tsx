@@ -63,7 +63,7 @@ function Home() {
         <hr className="my-[2vw] border-none border-t border-white/60" />
         <Link
           to="/showcase"
-          className="block mt-auto relative z-50 hover:no-underline"
+          className="block mt-6 md:mt-auto relative z-50 hover:no-underline"
           style={{ touchAction: 'manipulation' }}
         >
           <Marquee
@@ -92,7 +92,7 @@ function Home() {
         <hr className="my-[2vw] border-none border-t border-black/60" />
         <Link
           to="/cinematic-identity"
-          className="block mt-auto relative z-50 hover:no-underline"
+          className="block mt-6 md:mt-auto relative z-50 hover:no-underline"
           style={{ touchAction: 'manipulation' }}
         >
           <Marquee
@@ -121,7 +121,7 @@ function Home() {
         <hr className="my-[2vw] border-none border-t border-white/50" />
         <Link
           to="/theatrical-trailer"
-          className="block mt-auto relative z-50 hover:no-underline"
+          className="block mt-6 md:mt-auto relative z-50 hover:no-underline"
           style={{ touchAction: 'manipulation' }}
         >
           <Marquee
