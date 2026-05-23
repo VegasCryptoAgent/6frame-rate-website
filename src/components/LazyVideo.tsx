@@ -1,36 +1,56 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, Play } from 'lucide-react';
 
 interface LazyVideoProps extends React.VideoHTMLAttributes<HTMLVideoElement> {
   src: string;
   isCinemaMode?: boolean;
 }
 
-const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onClick, ...props }) => {
-  // activeSrc drives whether the video element downloads anything.
-  // We set it to the real src when visible, and clear it when scrolled away
-  // so the browser cancels the download and frees bandwidth for other videos.
+// Detect touch/mobile once at module level
+const IS_MOBILE =
+  typeof window !== 'undefined' &&
+  (navigator.maxTouchPoints > 0 || window.innerWidth < 768);
+
+const LazyVideo: React.FC<LazyVideoProps> = ({
+  src,
+  isCinemaMode,
+  className,
+  onClick,
+  ...props
+}) => {
+  // undefined  → card view (in the scrolling gallery)
+  // false      → detail overlay (user tapped to expand)
+  // true       → fullscreen cinema mode
+  const isCardView = isCinemaMode === undefined;
+
   const [activeSrc, setActiveSrc] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isBuffering, setIsBuffering] = useState(false);
+  // Mobile card view: user must tap Play before we download anything
+  const [mobilePlayRequested, setMobilePlayRequested] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Unmute when entering cinema mode
   useEffect(() => {
-    if (isCinemaMode) {
-      setIsMuted(false);
-    }
+    if (isCinemaMode) setIsMuted(false);
   }, [isCinemaMode]);
 
+  // IntersectionObserver — handles desktop auto-load + scroll-away cleanup
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveSrc(src);
+            // Desktop: always auto-load
+            // Mobile in overlay/cinema: auto-load (user explicitly opened it)
+            // Mobile in card view: wait for explicit tap
+            if (!IS_MOBILE || !isCardView) {
+              setActiveSrc(src);
+            }
           } else if (!isCinemaMode) {
-            // Cancel the download so this video doesn't compete for bandwidth
+            // Scrolled away — cancel download to free bandwidth
             const video = videoRef.current;
             if (video) {
               video.pause();
@@ -40,32 +60,37 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
             setActiveSrc(null);
             setIsReady(false);
             setIsBuffering(false);
+            // Reset tap state so the play button reappears if user scrolls back
+            if (IS_MOBILE && isCardView) setMobilePlayRequested(false);
           }
         });
       },
       {
-        // Start loading when 250px from viewport — gives a short head-start
-        // without wasting bandwidth on videos the user may never reach
-        rootMargin: isCinemaMode ? '0px' : '250px',
+        rootMargin: isCinemaMode ? '0px' : IS_MOBILE ? '0px' : '250px',
         threshold: 0.05,
       }
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
+    if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
-  }, [src, isCinemaMode]);
+  }, [src, isCinemaMode, isCardView]);
 
-  // Reset when src prop changes
+  // Mobile tap-to-play: once requested, load the src
+  useEffect(() => {
+    if (mobilePlayRequested && !activeSrc) {
+      setActiveSrc(src);
+    }
+  }, [mobilePlayRequested, src, activeSrc]);
+
+  // Reset everything when src changes
   useEffect(() => {
     setActiveSrc(null);
     setIsReady(false);
     setIsBuffering(false);
+    setMobilePlayRequested(false);
   }, [src]);
 
-  // Play/pause based on whether we have an active src and are ready
+  // Play/pause when ready
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !activeSrc || !isReady) return;
@@ -81,24 +106,35 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
     }
   }, [activeSrc, isReady, isMuted]);
 
+  const handleMobilePlay = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Don't trigger card expand
+    setMobilePlayRequested(true);
+  };
+
+  // On mobile in card view, show placeholder until the user taps Play
+  const showMobilePlaceholder = IS_MOBILE && isCardView && !mobilePlayRequested;
+
   return (
     <div
       ref={containerRef}
       className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center"
       style={{ transform: 'translateZ(0)', backfaceVisibility: 'hidden' }}
     >
-      {activeSrc ? (
+      {/* Video element — only rendered when we have an active src */}
+      {activeSrc && (
         <video
           ref={videoRef}
           src={activeSrc}
-          className={`${className} transition-opacity duration-300 ${isReady ? 'opacity-100' : 'opacity-0'} max-h-full max-w-full`}
+          className={`${className} transition-opacity duration-500 ${isReady ? 'opacity-100' : 'opacity-0'} max-h-full max-w-full`}
           onClick={onClick}
           onLoadedData={() => { setIsReady(true); setIsBuffering(false); }}
           onCanPlay={() => { setIsReady(true); setIsBuffering(false); }}
           onWaiting={() => setIsBuffering(true)}
           onPlaying={() => setIsBuffering(false)}
           onStalled={() => setIsBuffering(true)}
-          preload="auto"
+          // On mobile in overlay/cinema: metadata only until play starts, then auto
+          // On desktop: always auto
+          preload={IS_MOBILE ? 'metadata' : 'auto'}
           playsInline
           muted={isMuted}
           loop
@@ -113,9 +149,26 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
           }}
           {...props}
         />
-      ) : null}
+      )}
 
-      {/* Mute/unmute button — only show when video is playing */}
+      {/* Mobile card placeholder — shown before user taps Play */}
+      {showMobilePlaceholder && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-black/60 gap-4">
+          <button
+            onClick={handleMobilePlay}
+            style={{ touchAction: 'manipulation' }}
+            className="w-16 h-16 rounded-full bg-[#ff4d00]/90 border-2 border-white/20 flex items-center justify-center backdrop-blur-sm active:scale-95 transition-transform"
+            aria-label="Play video"
+          >
+            <Play size={24} className="text-white ml-1" fill="white" />
+          </button>
+          <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">
+            Tap to Preview
+          </span>
+        </div>
+      )}
+
+      {/* Mute/unmute — only show when video is playing */}
       {isReady && !isBuffering && activeSrc && (
         <button
           onClick={(e) => {
@@ -140,7 +193,7 @@ const LazyVideo: React.FC<LazyVideoProps> = ({ src, isCinemaMode, className, onC
         </button>
       )}
 
-      {/* Loading spinner — shown while buffering */}
+      {/* Loading spinner — shown while buffering after a load was triggered */}
       {(!isReady || isBuffering) && activeSrc && (
         <div className="absolute inset-0 w-full h-full bg-black/40 flex items-center justify-center overflow-hidden pointer-events-none">
           <div className="relative z-10 w-12 h-12 border border-white/10 flex items-center justify-center">
