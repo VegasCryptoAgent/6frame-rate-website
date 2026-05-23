@@ -54,7 +54,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'cinematic-identity',
     title: "Full House Parody",
     code: "NP-05",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/Full%20House%20Parody.mp4?alt=media&token=bc2ce68e-f383-452f-8a48-b78af3efa1d4",
+    url: `${GH}/Full.House.Parody.mp4`,
     order: 5,
     description: "A creative parody project, blending retro TV aesthetics with modern motion graphics precision.",
     duration: "0:30"
@@ -74,7 +74,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'cinematic-identity',
     title: "Eden Festival",
     code: "NP-07",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/New%20Eden%20Festival%20.mp4?alt=media&token=6cc35bc8-4497-411c-a669-7a0714b04d12",
+    url: `${GH}/New.Eden.Festival.mp4`,
     order: 7,
     description: "Vibrant and energetic promo for the Eden Festival, capturing the spirit of live experience through motion.",
     duration: "0:25"

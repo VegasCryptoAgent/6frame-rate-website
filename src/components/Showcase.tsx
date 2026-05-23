@@ -124,7 +124,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "6Frame Director Commercial",
     code: "NP-12",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6frame-studio-01.mp4?alt=media&token=510b9d08-86e3-4820-8267-f6ce8e3abf4b",
+    url: `${GH}/6Frame.Director.Commercial.mp4`,
     order: 12,
     description: "A director's cut commercial from 6Frame Studio — uncompromised creative vision, premium production value, and the kind of visual storytelling that only comes from a team operating at the absolute top of its craft.",
     duration: "1:00"
@@ -134,7 +134,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "6Frame Superman Commercial",
     code: "NP-13",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6frame-studio-03.mp4?alt=media&token=55610cfd-d180-4bf9-98d8-8c6233f4246f",
+    url: `${GH}/6Frame.Superman.Commercial.mp4`,
     order: 13,
     description: "6Frame brings the Man of Steel to life — a Superman commercial built on complex character animation, epic environmental design, and a cinematic scope that puts studio-grade production in your hands.",
     duration: "0:45"
