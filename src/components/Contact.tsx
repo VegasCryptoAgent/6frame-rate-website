@@ -50,7 +50,7 @@ export default function Contact() {
       </nav>
 
       {/* Dynamic Header */}
-      <section className="relative pt-40 pb-12 px-[6vw]">
+      <section className="relative pt-24 md:pt-40 pb-12 px-[6vw]">
         <div className="relative z-10 space-y-4">
           <motion.div
             key={step}
@@ -135,7 +135,8 @@ export default function Contact() {
                         <button
                           key={p}
                           onClick={() => setFormData(prev => ({ ...prev, project: p }))}
-                          className={`p-10 border-2 text-left transition-all relative overflow-hidden group ${formData.project === p ? 'border-[#ff4d00] bg-[#ff4d00]/10' : 'border-white/10 hover:border-white/40'}`}
+                          style={{ touchAction: 'manipulation' }}
+                          className={`p-5 md:p-10 border-2 text-left transition-all relative overflow-hidden group ${formData.project === p ? 'border-[#ff4d00] bg-[#ff4d00]/10' : 'border-white/10 hover:border-white/40'}`}
                         >
                           <span className={`text-xl font-black uppercase tracking-tight block ${formData.project === p ? 'text-[#ff4d00]' : 'text-white/60'}`}>{p}</span>
                           {formData.project === p && <Check className="absolute top-4 right-4 text-[#ff4d00]" size={16} />}
@@ -151,7 +152,8 @@ export default function Contact() {
                         <button
                           key={v}
                           onClick={() => setFormData(prev => ({ ...prev, vibe: v }))}
-                          className={`py-4 px-6 border font-bold uppercase text-[10px] tracking-widest transition-all ${formData.vibe === v ? 'bg-white text-black border-white' : 'border-white/10 hover:bg-white/5'}`}
+                          style={{ touchAction: 'manipulation' }}
+                          className={`py-4 px-4 md:px-6 border font-bold uppercase text-[10px] tracking-widest transition-all ${formData.vibe === v ? 'bg-white text-black border-white' : 'border-white/10 hover:bg-white/5'}`}
                         >
                           {v}
                         </button>
@@ -179,9 +181,9 @@ export default function Contact() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="w-full space-y-12"
                 >
-                  <div className="flex flex-col lg:flex-row gap-20 items-start">
+                  <div className="flex flex-col lg:flex-row gap-8 lg:gap-20 items-start">
                     {/* Summary Card */}
-                    <div className="w-full lg:w-1/3 bg-white/[0.03] border border-white/10 p-12 space-y-8">
+                    <div className="w-full lg:w-1/3 bg-white/[0.03] border border-white/10 p-6 md:p-12 space-y-8">
                        <div className="space-y-2">
                          <span className="text-[10px] uppercase tracking-widest text-white/30">Client_Profile</span>
                          <p className="text-2xl font-black uppercase">{formData.name}</p>
@@ -202,7 +204,7 @@ export default function Contact() {
                     </div>
 
                     {/* Success / Redirect Action */}
-                    <div className="w-full lg:w-2/3 flex flex-col items-center justify-center border border-[#ff4d00]/30 bg-[#ff4d00]/5 p-20 text-center space-y-12">
+                    <div className="w-full lg:w-2/3 flex flex-col items-center justify-center border border-[#ff4d00]/30 bg-[#ff4d00]/5 p-8 md:p-20 text-center space-y-12">
                       <div className="space-y-4">
                         <h3 className="text-5xl font-black uppercase tracking-tighter">Transmission <span className="italic text-white/40">Verified</span></h3>
                         <p className="max-w-[40ch] text-white/60 mx-auto">

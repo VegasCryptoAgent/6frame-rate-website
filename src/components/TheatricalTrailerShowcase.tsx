@@ -117,11 +117,12 @@ const TrailerCard: React.FC<TrailerCardProps> = ({ video, index, onSelect }) => 
       </motion.div>
 
       <div className="relative z-10 w-full max-w-7xl flex flex-col items-center gap-4 md:gap-[4vw]">
-        <div 
+        <div
           onClick={(e) => {
             console.log("Expanding trailer:", video.title);
             onSelect(video);
           }}
+          style={{ touchAction: 'manipulation' }}
           className="w-full relative group cursor-pointer z-20"
         >
           <div className="aspect-video w-full overflow-hidden bg-black relative border border-white/5 group-hover:border-white/20 transition-colors duration-500">
@@ -372,12 +373,13 @@ export default function TheatricalTrailerShowcase() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     className="w-full max-w-7xl mx-auto flex flex-col gap-8 flex-grow"
                   >
-                    <div className="flex justify-between items-center text-white/60 shrink-0">
+                    <div className="flex flex-wrap justify-between items-center gap-4 text-white/60 shrink-0">
                       <div className="flex items-center gap-4">
                         <div className="w-2 h-2 rounded-full bg-[#ff4d00] animate-pulse" />
-                        <span className="font-mono tracking-[0.6em] text-[10px] uppercase italic">Master.Override // Production_Mode</span>
+                        <span className="font-mono tracking-[0.6em] text-[10px] uppercase italic hidden sm:block">Master.Override // Production_Mode</span>
+                        <span className="font-mono tracking-[0.3em] text-[10px] uppercase italic sm:hidden">OVERRIDE</span>
                       </div>
-                      <div className="flex gap-4">
+                      <div className="flex flex-wrap gap-3">
                         <button 
                           onClick={handleDetailShare}
                           className="flex items-center gap-3 p-4 border border-white/10 bg-white/5 hover:bg-[#ff4d00] hover:text-black transition-all uppercase text-[10px] tracking-widest font-black"
@@ -407,7 +409,7 @@ export default function TheatricalTrailerShowcase() {
                     </div>
 
                     <div className="flex flex-col lg:flex-row gap-12 flex-grow items-center">
-                      <div className="lg:w-3/4 max-h-[60vh] overflow-hidden">
+                      <div className="lg:w-3/4 max-h-[40vh] md:max-h-[60vh] overflow-hidden">
                         <div 
                           onClick={() => selectedVideo.url && setIsCinemaMode(true)}
                           className={`bg-[#050505] relative group cursor-pointer overflow-hidden aspect-[21/9] border border-white/5 ${selectedVideo.url ? 'hover:border-[#ff4d00]/40' : 'cursor-default'} shadow-2xl`}
@@ -502,26 +504,27 @@ export default function TheatricalTrailerShowcase() {
       </AnimatePresence>
 
       {/* UI Hud Layout */}
-      <div className="fixed inset-0 pointer-events-none z-[100] p-12 border border-white/5">
+      <div className="fixed inset-0 pointer-events-none z-[100] p-4 md:p-12 border border-white/5">
         {/* Viewfinder Corners */}
-        <div className="absolute top-12 left-12 w-8 h-8 border-t-2 border-l-2 border-white/10" />
-        <div className="absolute top-12 right-12 w-8 h-8 border-t-2 border-r-2 border-white/10" />
-        <div className="absolute bottom-12 left-12 w-8 h-8 border-b-2 border-l-2 border-white/10" />
-        <div className="absolute bottom-12 right-12 w-8 h-8 border-b-2 border-r-2 border-white/10" />
-        
+        <div className="absolute top-4 left-4 md:top-12 md:left-12 w-8 h-8 border-t-2 border-l-2 border-white/10" />
+        <div className="absolute top-4 right-4 md:top-12 md:right-12 w-8 h-8 border-t-2 border-r-2 border-white/10" />
+        <div className="absolute bottom-4 left-4 md:bottom-12 md:left-12 w-8 h-8 border-b-2 border-l-2 border-white/10" />
+        <div className="absolute bottom-4 right-4 md:bottom-12 md:right-12 w-8 h-8 border-b-2 border-r-2 border-white/10" />
+
         {/* Rec Dot */}
-        <div className="absolute top-12 right-24 flex items-center gap-3">
+        <div className="absolute top-4 right-16 md:top-12 md:right-24 flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
           <span className="text-[10px] font-mono tracking-widest uppercase opacity-80">REC</span>
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="fixed top-12 left-24 z-[102]">
-        <motion.button 
+      <nav className="fixed top-4 left-4 md:top-12 md:left-24 z-[102]">
+        <motion.button
           whileHover={{ scale: 1.1, x: -5 }}
           onClick={() => navigate('/')}
-          className="w-16 h-16 rounded-sm bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300"
+          style={{ touchAction: 'manipulation' }}
+          className="w-12 h-12 md:w-16 md:h-16 rounded-sm bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300"
         >
           <ArrowLeft size={24} />
         </motion.button>

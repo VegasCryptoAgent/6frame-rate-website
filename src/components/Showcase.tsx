@@ -198,11 +198,12 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, index, onSelect }) => {
 
       <div className="relative z-10 w-full max-w-7xl flex flex-col lg:flex-row items-center gap-4 lg:gap-[4vw]">
         {/* The Frame */}
-        <div 
+        <div
           onClick={(e) => {
             console.log("Expanding project:", video.title);
             onSelect(video);
           }}
+          style={{ touchAction: 'manipulation' }}
           className="relative w-full lg:w-[50%] aspect-video group cursor-pointer z-20"
         >
           {/* Animated Borders */}
@@ -289,12 +290,13 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, index, onSelect }) => {
             </div>
           </div>
 
-          <motion.div 
+          <motion.div
             whileHover={{ x: 10 }}
             onClick={(e) => {
               console.log("Extracting brief:", video.title);
               onSelect(video);
             }}
+            style={{ touchAction: 'manipulation' }}
             className="inline-flex items-center gap-4 text-[#ff4d00] cursor-pointer group z-20"
           >
             <div className="w-12 h-12 rounded-full border border-[#ff4d00]/30 flex items-center justify-center group-hover:bg-[#ff4d00] group-hover:text-black transition-all">
@@ -482,9 +484,9 @@ export default function Showcase() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     className="w-full max-w-7xl mx-auto flex flex-col gap-8 flex-grow"
                   >
-                    <div className="flex justify-between items-center shrink-0">
+                    <div className="flex flex-wrap justify-between items-center gap-4 shrink-0">
                       <span className="font-mono text-[#ff4d00] tracking-[0.5em] text-xs uppercase">Project.Details</span>
-                      <div className="flex gap-4">
+                      <div className="flex flex-wrap gap-3">
                         <button 
                           onClick={handleDetailShare}
                           className="flex items-center gap-3 p-4 rounded-full border border-white/10 hover:bg-white hover:text-black transition-all uppercase text-[10px] tracking-widest font-bold"
@@ -514,7 +516,7 @@ export default function Showcase() {
                     </div>
 
                     <div className="flex flex-col lg:flex-row gap-12 flex-grow">
-                      <div className="lg:w-2/3 max-h-[60vh] overflow-hidden">
+                      <div className="lg:w-2/3 max-h-[40vh] md:max-h-[60vh] overflow-hidden">
                         <div 
                           onClick={() => setIsCinemaMode(true)}
                           className="bg-black relative group cursor-pointer overflow-hidden aspect-video border border-white/5 hover:border-[#ff4d00]/50 shadow-2xl"
@@ -611,10 +613,11 @@ export default function Showcase() {
       />
 
       {/* Navigation */}
-      <nav className="fixed top-12 left-12 z-[102]">
-        <button 
+      <nav className="fixed top-4 left-4 md:top-12 md:left-12 z-[102]">
+        <button
           onClick={() => navigate('/')}
-          className="group relative flex items-center justify-center w-16 h-16 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-[#ff4d00] transition-colors duration-500 overflow-hidden"
+          style={{ touchAction: 'manipulation' }}
+          className="group relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-[#ff4d00] transition-colors duration-500 overflow-hidden"
         >
           <ArrowLeft size={24} className="group-hover:-translate-x-2 transition-transform" />
           <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />

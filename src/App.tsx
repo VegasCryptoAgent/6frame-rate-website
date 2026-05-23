@@ -140,6 +140,8 @@ function Home() {
           <div
             onMouseEnter={() => setIsJoinHovered(true)}
             onMouseLeave={() => setIsJoinHovered(false)}
+            onTouchStart={() => setIsJoinHovered(true)}
+            onTouchEnd={() => setIsJoinHovered(false)}
             onClick={() => navigate('/contact')}
             className="cursor-pointer relative inline-block group"
             style={{ touchAction: 'manipulation' }}

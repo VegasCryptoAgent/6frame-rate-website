@@ -140,11 +140,12 @@ const IdentityCard: React.FC<IdentityCardProps> = ({ video, index, onSelect }) =
 
       <div className={`relative z-10 w-full max-w-7xl flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-4 lg:gap-[6vw]`}>
         <div className="w-full lg:w-[50%] group relative z-20">
-          <div 
+          <div
             onClick={(e) => {
               console.log("Expanding identity:", video.title);
               onSelect(video);
             }}
+            style={{ touchAction: 'manipulation' }}
             className="cursor-pointer"
           >
             <div className="absolute -inset-8 border border-black/5 rounded-full group-hover:scale-110 transition-transform duration-1000" />
@@ -389,9 +390,9 @@ export default function CinematicIdentityShowcase() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     className="w-full max-w-7xl mx-auto flex flex-col gap-8 flex-grow"
                   >
-                    <div className="flex justify-between items-center text-black shrink-0">
+                    <div className="flex flex-wrap justify-between items-center gap-4 text-black shrink-0">
                       <span className="font-mono text-[#ff4d00] tracking-[0.5em] text-xs uppercase">Identity.Specs</span>
-                      <div className="flex gap-4">
+                      <div className="flex flex-wrap gap-3">
                         <button 
                           onClick={handleDetailShare}
                           className="flex items-center gap-3 p-4 rounded-full border border-black/10 hover:bg-black hover:text-white transition-all uppercase text-[10px] tracking-widest font-bold"
@@ -421,9 +422,10 @@ export default function CinematicIdentityShowcase() {
                     </div>
 
                     <div className="flex flex-col lg:flex-row gap-12 flex-grow items-center">
-                      <div className="lg:w-2/3 max-h-[60vh] overflow-hidden">
-                        <div 
+                      <div className="lg:w-2/3 max-h-[40vh] md:max-h-[60vh] overflow-hidden">
+                        <div
                           onClick={() => setIsCinemaMode(true)}
+                          style={{ touchAction: 'manipulation' }}
                           className="relative group cursor-pointer overflow-hidden aspect-video shadow-2xl bg-black hover:outline hover:outline-4 hover:outline-[#ff4d00]/20"
                         >
                           <LazyVideo 
@@ -512,11 +514,12 @@ export default function CinematicIdentityShowcase() {
       </div>
 
       {/* Nav */}
-      <nav className="fixed top-12 left-12 z-[102]">
-        <motion.button 
+      <nav className="fixed top-4 left-4 md:top-12 md:left-12 z-[102]">
+        <motion.button
           whileHover={{ scale: 1.1, x: 5 }}
           onClick={() => navigate('/')}
-          className="w-16 h-16 rounded-full bg-white border border-black/10 flex items-center justify-center shadow-xl group"
+          style={{ touchAction: 'manipulation' }}
+          className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white border border-black/10 flex items-center justify-center shadow-xl group"
         >
           <ArrowLeft size={24} className="group-hover:-translate-x-2 transition-transform duration-300" />
         </motion.button>
