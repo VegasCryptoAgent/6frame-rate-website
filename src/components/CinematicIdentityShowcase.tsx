@@ -14,7 +14,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'cinematic-identity',
     title: "6Frame Reel",
     code: "6F-SR",
-    url: `${GH}/When.I.Look.At.You.mp4`,
+    url: `${GH}/Let.Them.See.You.mp4`,
     order: 1,
     description: "The definitive 6Frame showreel, showcasing our range of cinematic capabilities across various projects.",
     duration: "1:20"
