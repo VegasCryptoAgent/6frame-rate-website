@@ -16,7 +16,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "6F-SR",
     url: `${GH}/Upscale.JMI.Logo.mp4`,
     order: 1,
-    description: "A high-impact cinematic logo animation for JMI Entertainment, featuring dynamic lighting and premium textures.",
+    description: "A cinematic logo reveal for JMI Entertainment — built with dynamic lighting rigs, layered particle systems, and premium material textures that demand attention from the first frame.",
     duration: "0:12"
   },
   {
@@ -26,7 +26,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "AF-775",
     url: `${GH}/1810.Short.Commercial.mp4`,
     order: 2,
-    description: "Promotional spot for the 1810 Series, utilizing motion graphics to convey luxury and technical precision.",
+    description: "A high-energy promotional spot for the 1810 Series — razor-sharp motion graphics, luxury pacing, and technical precision woven together into a short-form commercial built to convert.",
     duration: "0:30"
   },
   {
@@ -36,7 +36,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "PD-3",
     url: `${GH}/IndeRoc.Logo.mp4`,
     order: 3,
-    description: "Logo reveal for IndeRoc, focusing on organic textures and powerful composition.",
+    description: "A bold logo reveal for IndeRoc — raw, organic textures collide with structured composition to create a brand mark that hits hard and stays in your memory long after the screen goes dark.",
     duration: "0:08"
   },
   {
@@ -46,7 +46,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "JMI-EN",
     url: `${GH}/FilmProjector.Commercial.mp4`,
     order: 4,
-    description: "Opening titles for the 1810 Series, blending cinematic scale with detailed typography.",
+    description: "The 6Frame Studio projector logo — a cinematic identity piece that fuses vintage film culture with modern motion design. Every frame engineered to feel like the start of something legendary.",
     duration: "0:15"
   },
   {
@@ -56,7 +56,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "NP-05",
     url: `${GH}/6Frame.Batman.Commercial.mp4`,
     order: 5,
-    description: "Custom commercial project showcasing advanced 3D motion techniques and cinematic storytelling.",
+    description: "6Frame takes on Gotham — a full-scale Batman commercial built with advanced 3D motion techniques, dramatic lighting, and iconic character-driven storytelling at a cinematic level.",
     duration: "0:45"
   },
   {
@@ -66,7 +66,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "NP-06",
     url: `${GH}/6Frame.Commercial.New.mp4`,
     order: 6,
-    description: "Full production commercial featuring high-end visual effects and professional voice-over integration.",
+    description: "A flagship 6Frame Studio commercial — polished production from concept to final render, demonstrating our signature blend of high-end visual effects and results-driven brand storytelling.",
     duration: "1:00"
   },
   {
@@ -76,7 +76,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "NP-07",
     url: `${GH}/Be.Afraid.mp4`,
     order: 7,
-    description: "Sleek and professional logo animation for SQS, emphasizing technology and reliability.",
+    description: "A visceral motion piece designed to stop the scroll dead. Tension-driven visual language, aggressive pacing, and a sound design that makes the audience feel something before they even know why.",
     duration: "0:10"
   },
   {
@@ -86,7 +86,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "NP-08",
     url: `${GH}/6Frame.Commercial.v2.mp4`,
     order: 8,
-    description: "An alternate creative take on the SQS brand identity, exploring different visual languages.",
+    description: "The official 6Frame Studio brand mark in motion — a distillation of everything we stand for. Precision, impact, and a visual identity forged to represent the highest tier of motion design.",
     duration: "0:12"
   },
   {
@@ -96,7 +96,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "NP-09",
     url: `${GH}/Tesla.mp4`,
     order: 9,
-    description: "Studio production commercial highlighting our creative process and technical capabilities.",
+    description: "A no-holds-barred Tesla commercial with an attitude to match. Kinetic energy, bold type, and a message that lands like a punch — proof that the best brand films don't ask for permission.",
     duration: "0:50"
   },
   {
@@ -106,7 +106,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "NP-10",
     url: `${GH}/6Frame.Sizzle.Reel.mp4`,
     order: 10,
-    description: "A visually striking commercial spot developed in-house to demonstrate next-gen motion design.",
+    description: "A full production commercial for the 1810 Series — luxury pacing, immersive sound design, and motion graphics engineered to position the brand at the intersection of art and commerce.",
     duration: "0:40"
   },
   {
@@ -116,7 +116,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "NP-11",
     url: `${GH}/6Frame.Opening.Scene.mp4`,
     order: 11,
-    description: "Themed commercial project utilizing classic film aesthetics combined with modern digital precision.",
+    description: "The opening sequence for the 1810 Series — a cinematic title card that sets the tone before a single word of dialogue is spoken. Atmosphere, tension, and brand identity locked in from frame one.",
     duration: "0:35"
   },
   {
@@ -126,7 +126,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "NP-12",
     url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6frame-studio-01.mp4?alt=media&token=510b9d08-86e3-4820-8267-f6ce8e3abf4b",
     order: 12,
-    description: "High-octane commercial reel showcasing our best studio production work.",
+    description: "A director's cut commercial from 6Frame Studio — uncompromised creative vision, premium production value, and the kind of visual storytelling that only comes from a team operating at the absolute top of its craft.",
     duration: "1:00"
   },
   {
@@ -136,7 +136,7 @@ const DEFAULT_VIDEOS: Video[] = [
     code: "NP-13",
     url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6frame-studio-03.mp4?alt=media&token=55610cfd-d180-4bf9-98d8-8c6233f4246f",
     order: 13,
-    description: "Themed superhero commercial demonstrating complex character animation and environmental design.",
+    description: "6Frame brings the Man of Steel to life — a Superman commercial built on complex character animation, epic environmental design, and a cinematic scope that puts studio-grade production in your hands.",
     duration: "0:45"
   }
 ];
