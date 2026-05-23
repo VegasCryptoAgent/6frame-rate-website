@@ -6,13 +6,15 @@ import Marquee from './Marquee.tsx';
 import LazyVideo from './LazyVideo.tsx';
 import { Video, subscribeToVideos, testConnection } from '../services/videoService';
 
+const GH = "https://github.com/VegasCryptoAgent/6frame-rate-website/releases/download/video-assets-v1";
+
 const DEFAULT_VIDEOS: Video[] = [
   {
     id: '1',
     showcaseId: 'theatrical-trailer',
     title: "El Patron",
     code: "6F-SR",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/El%20Patron.mp4?alt=media&token=944d79e2-2092-4519-b2f1-06966c7bb7bc",
+    url: `${GH}/El.Patron.mp4`,
     order: 1,
     description: "A dark and gritty trailer for 'El Patron', highlighting the intense atmosphere and cinematic sound design.",
     duration: "2:15"
@@ -22,7 +24,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'theatrical-trailer',
     title: "Par 4 the Course",
     code: "AF-775",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/Tiger%20Woods.mp4?alt=media&token=0cdf0a55-389b-450f-8833-6f96994c15a7",
+    url: `${GH}/Tiger.Woods.mp4`,
     order: 2,
     description: "A High-Energy sports satire spoof of the latest trails and tribulations of Tiger Woods.",
     duration: "0:45"
@@ -32,7 +34,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'theatrical-trailer',
     title: "Inner - Music Video",
     code: "NP-03",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/Inner%20Music%20Video.mp4?alt=media&token=ec1fcd18-ed7c-488e-b961-ae7d32801e16",
+    url: `${GH}/Inner.Music.Video.mp4`,
     order: 3,
     description: "Visually stunning music video for 'Inner', utilizing surreal imagery and rhythmic editing to complement the track.",
     duration: "3:40"
@@ -42,7 +44,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'theatrical-trailer',
     title: "The 27 Protocol",
     code: "NP-04",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/The%2027%20Protocol%20.mp4?alt=media&token=5181a1fd-5b85-4708-b4a7-4caef2e14541",
+    url: `${GH}/The.27.Protocol.mp4`,
     order: 4,
     description: "Sci-fi thriller trailer 'The 27 Protocol', using advanced VFX and a pulsing soundtrack to build suspense.",
     duration: "1:50"
@@ -52,7 +54,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'theatrical-trailer',
     title: "The Thorn Recordings",
     code: "PX-05",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/The%20Thorn%20Recordings.mp4?alt=media&token=88cf7cec-fe70-47c8-a2de-b810d426cc82",
+    url: `${GH}/The.Thorn.Recordings.mp4`,
     order: 5,
     description: "Upcoming cinematic production. Placeholder for future theatrical trailer integration.",
     duration: "TBD"

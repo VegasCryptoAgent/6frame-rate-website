@@ -6,13 +6,15 @@ import Marquee from './Marquee.tsx';
 import LazyVideo from './LazyVideo.tsx';
 import { Video, subscribeToVideos, testConnection } from '../services/videoService';
 
+const GH = "https://github.com/VegasCryptoAgent/6frame-rate-website/releases/download/video-assets-v1";
+
 const DEFAULT_VIDEOS: Video[] = [
   {
     id: '1',
     showcaseId: 'cinematic-identity',
     title: "6Frame Reel",
     code: "6F-SR",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/New%20Sizzle%20Vidoe%20for%20Website.mp4?alt=media&token=f03f95d1-980a-446d-bfc0-0625c95ad55b",
+    url: `${GH}/6Frame.Sizzle.Reel.mp4`,
     order: 1,
     description: "The definitive 6Frame showreel, showcasing our range of cinematic capabilities across various projects.",
     duration: "1:20"
@@ -22,7 +24,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'cinematic-identity',
     title: "1810 Series Intro Credits",
     code: "AF-775",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/a331dd7c-564c-448d-8812-a7758465569a.MP4?alt=media&token=50b87e57-ec3d-4c94-84eb-5a635bb49d54",
+    url: `${GH}/1810.Intro.Credits.mp4`,
     order: 2,
     description: "Elegant and sophisticated intro credits for the 1810 Series, using abstract visuals to set a premium tone.",
     duration: "0:45"
@@ -32,7 +34,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'cinematic-identity',
     title: "Pitch Deck",
     code: "PD-3",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/Pitch%20Deck%203.mp4?alt=media&token=c9152266-5668-4113-8e37-0bfc4edb0f31",
+    url: `${GH}/Pitch.Deck.3.mp4`,
     order: 3,
     description: "A dynamic pitch deck presentation video, designed to captivate audiences and convey complex ideas simply.",
     duration: "1:00"
@@ -42,7 +44,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'cinematic-identity',
     title: "Pearl Harbor",
     code: "PH-04",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/Upscale%20Pearl%20Harbor%20Video.mp4?alt=media&token=62ef91fa-10bb-495c-966c-3b1a37d86728",
+    url: `${GH}/Pearl.Harbor.mp4`,
     order: 4,
     description: "Cinematic recreation project focusing on historical atmosphere and high-fidelity rendering.",
     duration: "0:15"

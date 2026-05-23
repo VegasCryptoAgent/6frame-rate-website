@@ -6,13 +6,15 @@ import Marquee from './Marquee.tsx';
 import LazyVideo from './LazyVideo.tsx';
 import { Video, subscribeToVideos, testConnection } from '../services/videoService';
 
+const GH = "https://github.com/VegasCryptoAgent/6frame-rate-website/releases/download/video-assets-v1";
+
 const DEFAULT_VIDEOS: Video[] = [
   {
     id: '1',
     showcaseId: 'premium-motion',
     title: "JMI Entertainment Logo",
     code: "6F-SR",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/Upscale%20JMI%20Entertainent%20Logo%20Video.mp4?alt=media&token=0583b6c3-2397-4297-9ba5-64fea90eb78b",
+    url: `${GH}/Upscale.JMI.Logo.mp4`,
     order: 1,
     description: "A high-impact cinematic logo animation for JMI Entertainment, featuring dynamic lighting and premium textures.",
     duration: "0:12"
@@ -22,7 +24,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "1810 Series Promo",
     code: "AF-775",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/Upscale%201810%20Short%20Commercial.mp4?alt=media&token=1e9f1885-e0cc-4fac-bf1a-ba510270c298",
+    url: `${GH}/1810.Short.Commercial.mp4`,
     order: 2,
     description: "Promotional spot for the 1810 Series, utilizing motion graphics to convey luxury and technical precision.",
     duration: "0:30"
@@ -32,7 +34,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "IndeRoc Logo",
     code: "PD-3",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/upscale%20inderock%20logo.mp4?alt=media&token=caa6194b-69cd-4e79-a825-c46bba377c79",
+    url: `${GH}/IndeRoc.Logo.mp4`,
     order: 3,
     description: "Logo reveal for IndeRoc, focusing on organic textures and powerful composition.",
     duration: "0:08"
@@ -42,7 +44,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "1810 Series Intro",
     code: "JMI-EN",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/this%20one%20-%20upscale%20into.mp4?alt=media&token=339c7f08-4092-44fe-bad5-03beee3b80bd",
+    url: `${GH}/1810.Series.Intro.mp4`,
     order: 4,
     description: "Opening titles for the 1810 Series, blending cinematic scale with detailed typography.",
     duration: "0:15"
@@ -52,7 +54,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "6Frame Commercial",
     code: "NP-05",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6Frame%20Batman%20Commercial.mp4?alt=media&token=ad812cd7-595f-4d48-9572-f8d1e75c4b42",
+    url: `${GH}/6Frame.Batman.Commercial.mp4`,
     order: 5,
     description: "Custom commercial project showcasing advanced 3D motion techniques and cinematic storytelling.",
     duration: "0:45"
@@ -62,7 +64,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "6Frame Commercial",
     code: "NP-06",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6Frame%20Commerical%20with%20Voice%20Over.mp4?alt=media&token=526196d4-73d6-47e3-a75b-ac84fdda055a",
+    url: `${GH}/6Frame.Commercial.Voice.Over.mp4`,
     order: 6,
     description: "Full production commercial featuring high-end visual effects and professional voice-over integration.",
     duration: "1:00"
@@ -72,7 +74,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "SQS Logo",
     code: "NP-07",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/SQS%201.mp4?alt=media&token=84428354-840d-48eb-b91b-1086eb36489a",
+    url: `${GH}/SQS.Logo.mp4`,
     order: 7,
     description: "Sleek and professional logo animation for SQS, emphasizing technology and reliability.",
     duration: "0:10"
@@ -82,7 +84,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "SQS Alternative Logo",
     code: "NP-08",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/hf_20260514_233454_f26debf0-6f41-477c-b68f-804f3bc33b8d.mp4?alt=media&token=3dcdd32c-b758-4363-ad7a-ee6ed7d5ed5e",
+    url: `${GH}/SQS.Alt.Logo.mp4`,
     order: 8,
     description: "An alternate creative take on the SQS brand identity, exploring different visual languages.",
     duration: "0:12"
@@ -92,7 +94,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "6Frame Commercial",
     code: "NP-09",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6Frame%20Studio%20Productions%20Commercial.mp4?alt=media&token=d4494c7a-4552-4525-b470-7e2f839a9729",
+    url: `${GH}/6Frame.Studio.Productions.mp4`,
     order: 9,
     description: "Studio production commercial highlighting our creative process and technical capabilities.",
     duration: "0:50"
@@ -102,7 +104,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "6Frame Studio Commercial",
     code: "NP-10",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/hf_20260515_001524_f7483cbf-9ab4-487b-b444-57bf7bf9a10c.mp4?alt=media&token=25363a6f-3d68-499a-b499-e46b53b1cbcf",
+    url: `${GH}/6Frame.Sizzle.Reel.mp4`,
     order: 10,
     description: "A visually striking commercial spot developed in-house to demonstrate next-gen motion design.",
     duration: "0:40"
@@ -112,7 +114,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "6Frame Studio Commercial",
     code: "NP-11",
-    url: "https://firebasestorage.googleapis.com/v0/b/gen-lang-client-0374515011.firebasestorage.app/o/6FrameStudio%20FilmProjector%20Commercial.mp4?alt=media&token=762e3ba5-dad3-4479-bc15-5683ee167abe",
+    url: `${GH}/6Frame.Opening.Scene.mp4`,
     order: 11,
     description: "Themed commercial project utilizing classic film aesthetics combined with modern digital precision.",
     duration: "0:35"
