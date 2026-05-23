@@ -22,11 +22,11 @@ const DEFAULT_VIDEOS: Video[] = [
   {
     id: '2',
     showcaseId: 'cinematic-identity',
-    title: "1810 Series Intro Credits",
+    title: "6Frame Pitch Deck",
     code: "AF-775",
     url: `${GH}/6Frame.Pitch.Deck.mp4`,
     order: 2,
-    description: "Elegant and sophisticated intro credits for the 1810 Series, using abstract visuals to set a premium tone.",
+    description: "A cinematic pitch deck unlike anything in a boardroom — 6Frame turns the standard presentation into a full motion experience. Dynamic visuals, intentional pacing, and production value that makes investors, clients, and partners lean in before you say a word.",
     duration: "0:45"
   },
   {
