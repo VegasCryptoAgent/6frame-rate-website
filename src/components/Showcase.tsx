@@ -94,7 +94,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "6Frame Commercial",
     code: "NP-09",
-    url: `${GH}/6Frame.Studio.Productions.mp4`,
+    url: `${GH}/Tesla.mp4`,
     order: 9,
     description: "Studio production commercial highlighting our creative process and technical capabilities.",
     duration: "0:50"
