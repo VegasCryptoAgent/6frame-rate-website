@@ -64,7 +64,7 @@ const DEFAULT_VIDEOS: Video[] = [
     showcaseId: 'premium-motion',
     title: "6Frame Commercial",
     code: "NP-06",
-    url: `${GH}/6Frame.Commercial.Voice.Over.mp4`,
+    url: `${GH}/6Frame.Commercial.New.mp4`,
     order: 6,
     description: "Full production commercial featuring high-end visual effects and professional voice-over integration.",
     duration: "1:00"
