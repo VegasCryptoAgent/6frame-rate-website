@@ -220,10 +220,14 @@ export default function TheatricalTrailerShowcase() {
     // Subscribe to videos from Firebase
     const unsubscribe = subscribeToVideos('theatrical-trailer', (fetchedVideos) => {
       if (fetchedVideos.length > 0) {
-        setVideos(fetchedVideos.map(v => ({
-          ...DEFAULT_VIDEOS.find(dv => dv.id === v.id || dv.order === v.order),
-          ...v
-        })));
+        setVideos(fetchedVideos.map(v => {
+          const defaultVideo = DEFAULT_VIDEOS.find(dv => dv.id === v.id || dv.order === v.order);
+          return {
+            ...defaultVideo,
+            ...v,
+            url: defaultVideo?.url ?? v.url,
+          };
+        }));
       }
     });
 
