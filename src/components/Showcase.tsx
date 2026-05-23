@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence 
 import { ArrowLeft, Zap, Box, Activity, ShieldCheck, CornerRightDown, Share2, Check } from 'lucide-react';
 import Marquee from './Marquee.tsx';
 import LazyVideo from './LazyVideo.tsx';
-import { Video, subscribeToVideos, testConnection } from '../services/videoService';
+import { Video } from '../services/videoService';
 
 const GH = "https://6frame-videos.lvbretteam.workers.dev";
 
@@ -390,23 +390,8 @@ export default function Showcase() {
   }, [selectedVideo]);
   useEffect(() => {
     window.scrollTo(0, 0);
-    testConnection();
-
-    const unsubscribe = subscribeToVideos('premium-motion', (fetchedVideos) => {
-      if (fetchedVideos.length > 0) {
-        setVideos(fetchedVideos.map(v => {
-          const defaultVideo = DEFAULT_VIDEOS.find(dv => dv.id === v.id || dv.order === v.order);
-          return {
-            ...defaultVideo,
-            ...v,
-            url: defaultVideo?.url ?? v.url,
-          };
-        }));
-      }
-    });
 
     return () => {
-      unsubscribe();
       setIsCinemaMode(false);
     };
   }, []);

@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'mot
 import { ArrowLeft, Film, Play, Scissors, MonitorPlay, Zap, Share2, Check } from 'lucide-react';
 import Marquee from './Marquee.tsx';
 import LazyVideo from './LazyVideo.tsx';
-import { Video, subscribeToVideos, testConnection } from '../services/videoService';
+import { Video } from '../services/videoService';
 
 const GH = "https://6frame-videos.lvbretteam.workers.dev";
 
@@ -215,23 +215,7 @@ export default function TheatricalTrailerShowcase() {
   
   useEffect(() => {
     window.scrollTo(0, 0);
-    testConnection();
 
-    // Subscribe to videos from Firebase
-    const unsubscribe = subscribeToVideos('theatrical-trailer', (fetchedVideos) => {
-      if (fetchedVideos.length > 0) {
-        setVideos(fetchedVideos.map(v => {
-          const defaultVideo = DEFAULT_VIDEOS.find(dv => dv.id === v.id || dv.order === v.order);
-          return {
-            ...defaultVideo,
-            ...v,
-            url: defaultVideo?.url ?? v.url,
-          };
-        }));
-      }
-    });
-
-    return () => unsubscribe();
   }, []);
 
   const [realDuration, setRealDuration] = useState<string | null>(null);
